@@ -1,0 +1,20 @@
+public enum Token {
+    ADD,
+    SUBTRACT,
+    MULTIPLE,
+    DIVIDE,
+    INCREMENT,
+    DECREMENT,
+    ASSIGNMENT,
+    GT,
+    LT,
+    GTE,
+    LTE,
+    EQUAL,
+    NOT_EQUAL,
+    OPEN_BLOCK,
+    CLOSE_BLOCK,
+    MEMBER_OF,
+    OPTION_OF,
+    IF
+}
