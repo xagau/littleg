@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.StringTokenizer;
 
 
@@ -10,20 +11,20 @@ public class Loader {
         this.file = file;
     }
 
-    public Program compile()
+    public HashMap<String, Clazz> compile()
     {
         try {
 
             ArrayList arrayList = new ArrayList();
             BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
             String buffer = null;
-            String delim = ",{};";
+            String delim = "{};";
             while( (buffer = reader.readLine() )!= null ) {
                 try {
                     StringTokenizer tokenizer = new StringTokenizer(buffer, delim, true);
                     while( tokenizer.hasMoreTokens() ) {
                         String tok = tokenizer.nextToken();
-                        System.out.println(tok);
+                        System.out.println("Statement:" + tok);
                     }
                 } catch(Exception ex) {
                     ex.printStackTrace();

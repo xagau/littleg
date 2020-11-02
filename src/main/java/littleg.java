@@ -1,4 +1,6 @@
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class littleg {
 
@@ -8,7 +10,11 @@ public class littleg {
                 System.out.println("littleg file.g");
             }
             Loader loader = new Loader(new File(args[0]));
-            Program p = loader.compile();
+            HashMap<String, Clazz> list = loader.compile();
+            Clazz main = list.get("Main");
+            // encapsulate
+            Method m = main.methodSet.get("main");
+            m.invoke();
 
         } catch(Exception ex) {
 

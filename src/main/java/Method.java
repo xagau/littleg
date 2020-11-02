@@ -6,4 +6,15 @@ public class Method {
     private ArrayList<Statement> body = new ArrayList<Statement>();
     Variable returnValue = null;
 
+    public Variable invoke(ArrayList arguments)
+    {
+        return null;
+    }
+
+    public Variable invoke()
+    {
+        return invoke(null);
+    }
+
+
 }

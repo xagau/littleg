@@ -6,8 +6,10 @@ public class Variable {
     private PrimitiveType type = PrimitiveType.UNDEFINED;
 
     BigDecimal decimal = new BigDecimal(0);
+    Boolean bool = false;
     String string = "";
     Object object = null;
+    Void nothing = null;
 
     public void setValue(Object o)
     {
@@ -32,6 +34,18 @@ public class Variable {
                 break;
 
             }
+            case BOOLEAN: {
+                if( o instanceof Boolean ) {
+                    bool = (Boolean) o;
+                }
+                break;
+            }
+            case VOID: {
+                if( o instanceof Void ) {
+                    nothing = (Void) o;
+                }
+                break;
+            }
         }
     }
 
@@ -47,6 +61,12 @@ public class Variable {
             }
             case OBJECT: {
                 return object;
+            }
+            case VOID: {
+                return nothing;
+            }
+            case BOOLEAN: {
+                return bool;
             }
         }
         return null;
