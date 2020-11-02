@@ -4,21 +4,33 @@
 
 class Main {
 
+    decimal Z = 3.21;
+
+
     decimal functionTest(decimal A, decimal B)
     {
-        return A + B; # add A + B
+        return A + B + Z; # add A + B
     }
 
-    decimal main( string args[]) {
+    boolean main( arguments ) {
 
         decimal a = 2.2;
 
         for(decimal d = 0; d < 10; d++ ) {
             println(d);
         }
-        println("hello world");
+
+        Two two = new Two();
+        println(two.getHelloWorld());
         println(functionTest(a,2.5));
 
-        return 1;
+        return true;
+    }
+}
+
+class Two {
+
+    string getHelloWorld(){
+        return "Hello World";
     }
 }
