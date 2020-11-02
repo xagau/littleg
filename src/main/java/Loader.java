@@ -15,25 +15,15 @@ public class Loader {
     {
         try {
 
-            ArrayList arrayList = new ArrayList();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
-            String buffer = null;
-            String delim = "{};";
-            while( (buffer = reader.readLine() )!= null ) {
-                try {
-                    StringTokenizer tokenizer = new StringTokenizer(buffer, delim, true);
-                    while( tokenizer.hasMoreTokens() ) {
-                        String tok = tokenizer.nextToken();
-                        System.out.println("Statement:" + tok);
-                    }
-                } catch(Exception ex) {
-                    ex.printStackTrace();
-                }
+            Preprocessor processor = new Preprocessor();
+            File pFile = processor.process(file);
+            if(pFile == null ){
+                System.out.println("Proprocessor ran into an error");
             }
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+            HashMap<String, Clazz> classes = Parser.parseClazzes(pFile);
+            return classes;
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;

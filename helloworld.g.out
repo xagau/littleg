@@ -1,12 +1,9 @@
-##########################
-# This is a comment
-##########################
 
 class Main {
 
     decimal functionTest(decimal A, decimal B)
     {
-        return A + B; # add A + B
+        return A + B; 
     }
 
     decimal main( string args[]) {
