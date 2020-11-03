@@ -17,7 +17,7 @@ public class littleg {
             m.invoke();
 
         } catch(Exception ex) {
-
+            ex.printStackTrace();
         }
     }
 }

@@ -11,62 +11,45 @@ public class Variable {
     Object object = null;
     Void nothing = null;
 
-    public void setValue(Object o)
+    public void setValue(String val)
     {
-        switch(type){
+        switch(getType()){
             case DECIMAL: {
-                if( o instanceof BigDecimal ){
-                    decimal = (BigDecimal)o;
-                }
+                decimal = new BigDecimal(val);
                 break;
 
             }
             case STRING: {
-                if( o instanceof String ){
-                    string = (String)o;
-                }
+                string = val;
                 break;
             }
             case OBJECT: {
-                if( o instanceof Object ) {
-                    object = (Object) o;
-                }
+                object = "{}";
                 break;
 
             }
             case BOOLEAN: {
-                if( o instanceof Boolean ) {
-                    bool = (Boolean) o;
-                }
-                break;
-            }
-            case VOID: {
-                if( o instanceof Void ) {
-                    nothing = (Void) o;
-                }
+                bool = (Boolean.parseBoolean(val));
                 break;
             }
         }
     }
 
 
-    public Object getValue()
+    public String getValue()
     {
-        switch(type){
+        switch(getType()){
             case DECIMAL: {
-                return decimal;
+                return decimal.toString();
             }
             case STRING: {
                 return string;
             }
             case OBJECT: {
-                return object;
-            }
-            case VOID: {
-                return nothing;
+                return object.toString();
             }
             case BOOLEAN: {
-                return bool;
+                return bool.toString();
             }
         }
         return null;
@@ -78,5 +61,21 @@ public class Variable {
 
     public void setVisibility(VisibilityModifier visibility) {
         this.visibility = visibility;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public PrimitiveType getType() {
+        return type;
+    }
+
+    public void setType(PrimitiveType type) {
+        this.type = type;
     }
 }
