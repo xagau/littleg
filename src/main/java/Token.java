@@ -14,7 +14,10 @@ public enum Token {
     NOT_EQUAL,
     OPEN_BLOCK,
     CLOSE_BLOCK,
-    MEMBER_OF,
-    OPTION_OF,
-    IF
+    IF,
+    SWITCH,
+    FOR,
+    WHILE,
+    OPEN_BRACKET,
+    CLOSE_BRACKET,
 }
