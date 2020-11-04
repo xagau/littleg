@@ -39,3 +39,14 @@ class Two {
         return "Hello World";
     }
 }
+
+class Three {
+    decimal x = 1;
+    decimal y = 2;
+    decimal z = 3;
+    string testTwo = "This is a test " + x + " some more string.";
+
+    string gotcha( arguments ) {
+        return testTwo;
+    }
+}

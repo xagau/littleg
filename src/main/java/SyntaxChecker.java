@@ -50,7 +50,7 @@ public class SyntaxChecker {
 
 
     public static boolean isClazzBalanced(Clazz clazz){
-        String raw = clazz.body;
+        String raw = clazz.getBody();
         int block = 0;
         int statements = 0;
         boolean checkBalanced = isBalanced(raw);

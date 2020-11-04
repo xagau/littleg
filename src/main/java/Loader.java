@@ -14,16 +14,14 @@ public class Loader {
     public HashMap<String, Clazz> compile()
     {
         try {
-
             Preprocessor processor = new Preprocessor();
             File pFile = processor.process(file);
             if(pFile == null ){
                 System.out.println("Preprocessor ran into an error");
             }
             ArrayList<Particle> list = Parser.parse(pFile);
-
-            // work to be done.
-            return null;
+            HashMap<String, Clazz> map = Parser.parseClasses(list);
+           return map;
         } catch (Exception e) {
             e.printStackTrace();
         }
