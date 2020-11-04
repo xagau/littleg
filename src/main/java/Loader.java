@@ -18,11 +18,12 @@ public class Loader {
             Preprocessor processor = new Preprocessor();
             File pFile = processor.process(file);
             if(pFile == null ){
-                System.out.println("Proprocessor ran into an error");
+                System.out.println("Preprocessor ran into an error");
             }
+            ArrayList<Particle> list = Parser.parse(pFile);
 
-            HashMap<String, Clazz> classes = Parser.parseClazzes(pFile);
-            return classes;
+            // work to be done.
+            return null;
         } catch (Exception e) {
             e.printStackTrace();
         }
