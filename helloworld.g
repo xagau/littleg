@@ -4,7 +4,7 @@
 
 class Main {
 
-    decimal Z = 3.21;
+    decimal Z = 3.210490590390590349509382387648723658764526735446752376452387654876253; # test big decimal
     string test = "this is a test";
     boolean bb = false;
 
@@ -24,26 +24,30 @@ class Main {
             println("bb is true ");
         }
 
+        return "Nothing important";
+
     }
 
     decimal functionTest(decimal A, decimal B)
     {
-        return A + B + Z; # add A + B
+        return A + B + Z; # add A + B + Z
     }
 
+    # test ability to declare variables in class body.
     boolean b2 = false;
 
-    boolean main( arguments ) {
+    boolean main( ) {
 
         decimal a = 2.2;
 
         for(decimal d = 0; d < 10; d++ ) {
+            # replace with suitable logging facility
             println(d);
         }
 
         Two two = new Two();
-        println(two.getHelloWorld());
-        println(functionTest(a,2.5));
+        println(two.getHelloWorld()); # test instance invocation
+        println(functionTest(a,2.5)); # test function stack management
 
         return true;
     }
@@ -64,20 +68,20 @@ class Three {
     decimal z = 3;
     string testTwo = "This is a test " + x + " some more string.";
 
-    string gotcha( arguments ) {
+    string gotcha( ) {
 
         if( x == x ) {
-            return "True";
+            return "True"; # Test EQUALITY
         }
         if( x != x ) {
-            return "True";
+            return "True"; # Test NOT_EQUAL
         }
 
         x++;
         y++;
         z--;
 
-        return testTwo;
+        return testTwo; # test returning class member variable from within function scope.
     }
 }
 
