@@ -71,6 +71,17 @@ public class Parser {
                     }
                 }
             }
+            if (isNumeric(tok)) {
+                while (tokenizer.hasMoreTokens()) {
+                    String nxt = tokenizer.nextToken();
+                    if (nxt.equals(";")) {
+                        break;
+                    }
+                    tok += nxt;
+
+                }
+            }
+
             if (!tok.equals(" ")) { // speed up
                 Particle p = parseToParticle(tok);
                 programSet.add(p);
