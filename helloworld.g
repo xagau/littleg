@@ -1,4 +1,6 @@
 ##########################
+# littleg A programming Language
+# written by Sean Patrick Beecroft
 # This is a comment
 ##########################
 
