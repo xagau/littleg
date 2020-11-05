@@ -6,12 +6,18 @@ public class Particle {
     public boolean literalValue = false;
     public boolean reservedToken = false;
 
+    public String raw = "";
+
     public Keyword keyword = null;
     public Token token = null;
     public String name = null;
     public String stringValue = null;
     public BigDecimal decimalValue = null;
     public Boolean booleanValue = null;
+
+    public Particle(String raw){
+        this.raw = raw;
+    }
 
     public String toString()
     {

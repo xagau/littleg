@@ -10,7 +10,7 @@ public class littleg {
             }
             Loader loader = new Loader(new File(args[0]));
             HashMap<String, Clazz> list = loader.compile();
-            Clazz main = list.get("Three");
+            Clazz main = list.get("Four");
 
             for(int i = 0; i < main.getBodySet().size(); i++ ){
                 System.out.println(main.getBodySet().get(i));

@@ -88,7 +88,7 @@ public class Parser {
                 }
             }
         }
-        programSet = normalize(programSet);
+
         return programSet;
     }
 
@@ -101,85 +101,115 @@ public class Parser {
                 if( p.reservedToken ) {
                     if (p.token.equals(Token.PLUS)) {
                         Particle pp = list.get(i + 1);
-                        if (pp.token.equals(Token.PLUS)) {
-                            Particle fp = new Particle();
-                            fp.token = Token.INCREMENT;
-                            fp.reservedToken = true;
-                            newList.add(pp);
-                            i++;
-                        } else {
+                        try {
+                            if (pp.token.equals(Token.PLUS)) {
+                                Particle fp = new Particle(pp.raw);
+                                fp.token = Token.INCREMENT;
+                                fp.reservedToken = true;
+                                newList.add(pp);
+                                i++;
+                            } else {
+                                newList.add(p);
+                            }
+                        }
+                        catch(Exception ex) {
                             newList.add(p);
                         }
                     }
                     else if (p.token.equals(Token.MINUS)) {
-                        Particle pp = list.get(i + 1);
-                        if (pp.token.equals(Token.MINUS)) {
-                            Particle fp = new Particle();
-                            fp.token = Token.DECREMENT;
-                            fp.reservedToken = true;
-                            newList.add(pp);
-                            i++;
-                        }  else {
+                        try {
+                            Particle pp = list.get(i + 1);
+                            if (pp.token.equals(Token.MINUS)) {
+                                Particle fp = new Particle(pp.raw);
+                                fp.token = Token.DECREMENT;
+                                fp.reservedToken = true;
+                                newList.add(pp);
+                                i++;
+                            } else {
+                                newList.add(p);
+                            }
+                        } catch(Exception ex) {
                             newList.add(p);
                         }
                     }
                     else if (p.token.equals(Token.GT)) {
-                        Particle pp = list.get(i + 1);
-                        if (pp.token.equals(Token.ASSIGNMENT)) {
-                            Particle fp = new Particle();
-                            fp.token = Token.GTE;
-                            fp.reservedToken = true;
-                            newList.add(pp);
-                            i++;
-                        }  else {
+                        try {
+                            Particle pp = list.get(i + 1);
+                            if (pp.token.equals(Token.ASSIGNMENT)) {
+                                Particle fp = new Particle(pp.raw);
+                                fp.token = Token.GTE;
+                                fp.reservedToken = true;
+                                newList.add(pp);
+                                i++;
+                            } else {
+                                newList.add(p);
+                            }
+                        } catch (Exception ex) {
                             newList.add(p);
                         }
                     }
                     else if (p.token.equals(Token.LT)) {
-                        Particle pp = list.get(i + 1);
-                        if (pp.token.equals(Token.ASSIGNMENT)) {
-                            Particle fp = new Particle();
-                            fp.token = Token.LTE;
-                            fp.reservedToken = true;
-                            newList.add(pp);
-                            i++;
-                        }  else {
+
+                        try {
+                            Particle pp = list.get(i + 1);
+                            if (pp.token.equals(Token.ASSIGNMENT)) {
+                                Particle fp = new Particle(pp.raw);
+                                fp.token = Token.LTE;
+                                fp.reservedToken = true;
+                                newList.add(pp);
+                                i++;
+                            } else {
+                                newList.add(p);
+                            }
+                        } catch(Exception ex) {
                             newList.add(p);
                         }
                     }
                     else if (p.token.equals(Token.AND)) {
-                        Particle pp = list.get(i + 1);
-                        if (pp.token.equals(Token.AND)) {
-                            Particle fp = new Particle();
-                            fp.token = Token.LOGICAL_AND;
-                            fp.reservedToken = true;
-                            newList.add(pp);
-                            i++;
-                        }  else {
+                        try {
+                            Particle pp = list.get(i + 1);
+                            if (pp.token.equals(Token.AND)) {
+                                Particle fp = new Particle(pp.raw);
+                                fp.token = Token.LOGICAL_AND;
+                                fp.reservedToken = true;
+                                newList.add(pp);
+                                i++;
+                            } else {
+                                newList.add(p);
+                            }
+                        } catch(Exception ex) {
                             newList.add(p);
                         }
                     }
                     else if (p.token.equals(Token.NOT)) {
-                        Particle pp = list.get(i + 1);
-                        if (pp.token.equals(Token.ASSIGNMENT)) {
-                            Particle fp = new Particle();
-                            fp.token = Token.NOT_EQUAL;
-                            fp.reservedToken = true;
-                            newList.add(pp);
-                            i++;
-                        }  else {
+                        try {
+                            Particle pp = list.get(i + 1);
+                            if (pp.token.equals(Token.ASSIGNMENT)) {
+                                Particle fp = new Particle(pp.raw);
+                                fp.token = Token.NOT_EQUAL;
+                                fp.reservedToken = true;
+                                newList.add(pp);
+                                i++;
+                            } else {
+                                newList.add(p);
+                            }
+                        } catch(Exception ex) {
                             newList.add(p);
                         }
                     }
                     else if (p.token.equals(Token.ASSIGNMENT)) {
-                        Particle pp = list.get(i + 1);
-                        if (pp.token.equals(Token.ASSIGNMENT)) {
-                            Particle fp = new Particle();
-                            fp.token = Token.EQUAL;
-                            fp.reservedToken = true;
-                            newList.add(pp);
-                            i++;
-                        }  else {
+                        try {
+                            Particle pp = list.get(i + 1);
+                            if (pp.token.equals(Token.ASSIGNMENT)) {
+                                Particle fp = new Particle(pp.raw);
+                                fp.token = Token.EQUAL;
+                                fp.reservedToken = true;
+                                newList.add(pp);
+                                i++;
+                            } else {
+                                newList.add(p);
+                            }
+                        } catch(Exception ex) {
                             newList.add(p);
                         }
                     }
@@ -208,7 +238,7 @@ public class Parser {
     }
 
     public static Particle parseToParticle(String tok) {
-        Particle particle = new Particle();
+        Particle particle = new Particle(tok);
         Token t = null;
         Keyword k = null;
         if ((t = tokenLookup.get(tok)) != null) {
@@ -258,6 +288,7 @@ public class Parser {
             }
 
             ArrayList<Particle> list = parseToParticles(buffer.toString());
+            list = normalize(list); // add double operators.
             return list;
 
         } catch (Exception ex) {

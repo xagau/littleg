@@ -80,3 +80,13 @@ class Three {
         return testTwo;
     }
 }
+
+class Four {
+    void main() {
+        decimal x = 0;
+        x++;
+        if( x == 1 ) {
+            return;
+        }
+    }
+}
