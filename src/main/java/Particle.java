@@ -5,6 +5,7 @@ public class Particle {
     public boolean namedItem = false;
     public boolean literalValue = false;
     public boolean reservedToken = false;
+    public boolean namedFunction = false;
 
     public String raw = "";
 
@@ -43,6 +44,9 @@ public class Particle {
         }
         if( namedItem ){
             str += "Is a namedItem:" + namedItem + " [" + name + "]";
+        }
+        if( namedFunction ){
+            str += "Is a namedFunction:" + namedFunction + " [" + name + "]";
         }
         return str;
     }

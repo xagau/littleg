@@ -117,7 +117,7 @@ public class Parser {
                                 Particle fp = new Particle(pp.raw);
                                 fp.token = Token.INCREMENT;
                                 fp.reservedToken = true;
-                                newList.add(pp);
+                                newList.add(fp);
                                 i++;
                             } else {
                                 newList.add(p);
@@ -134,7 +134,7 @@ public class Parser {
                                 Particle fp = new Particle(pp.raw);
                                 fp.token = Token.DECREMENT;
                                 fp.reservedToken = true;
-                                newList.add(pp);
+                                newList.add(fp);
                                 i++;
                             } else {
                                 newList.add(p);
@@ -150,7 +150,7 @@ public class Parser {
                                 Particle fp = new Particle(pp.raw);
                                 fp.token = Token.GTE;
                                 fp.reservedToken = true;
-                                newList.add(pp);
+                                newList.add(fp);
                                 i++;
                             } else {
                                 newList.add(p);
@@ -167,7 +167,7 @@ public class Parser {
                                 Particle fp = new Particle(pp.raw);
                                 fp.token = Token.LTE;
                                 fp.reservedToken = true;
-                                newList.add(pp);
+                                newList.add(fp);
                                 i++;
                             } else {
                                 newList.add(p);
@@ -183,7 +183,7 @@ public class Parser {
                                 Particle fp = new Particle(pp.raw);
                                 fp.token = Token.LOGICAL_AND;
                                 fp.reservedToken = true;
-                                newList.add(pp);
+                                newList.add(fp);
                                 i++;
                             } else {
                                 newList.add(p);
@@ -199,7 +199,7 @@ public class Parser {
                                 Particle fp = new Particle(pp.raw);
                                 fp.token = Token.NOT_EQUAL;
                                 fp.reservedToken = true;
-                                newList.add(pp);
+                                newList.add(fp);
                                 i++;
                             } else {
                                 newList.add(p);
@@ -215,7 +215,7 @@ public class Parser {
                                 Particle fp = new Particle(pp.raw);
                                 fp.token = Token.EQUAL;
                                 fp.reservedToken = true;
-                                newList.add(pp);
+                                newList.add(fp);
                                 i++;
                             } else {
                                 newList.add(p);
@@ -223,6 +223,22 @@ public class Parser {
                         } catch(Exception ex) {
                             newList.add(p);
                         }
+                    }
+                    else if(p.namedItem ){
+                        try {
+                            Particle pp = list.get(i + 1);
+                            if (pp.token.equals(Token.OPEN_BRACE)) {
+                                //Particle fp = new Particle(pp.raw);
+                                p.namedItem = false;
+                                p.namedFunction = true;
+                                newList.add(p);
+                            } else {
+                                newList.add(p);
+                            }
+                        } catch(Exception ex) {
+                            newList.add(p);
+                        }
+
                     }
                     else {
                         newList.add(p);
@@ -299,8 +315,8 @@ public class Parser {
             }
 
             ArrayList<Particle> list = parseToParticles(buffer.toString());
-            list = normalize(list); // add double operators.
-            return list;
+            ArrayList<Particle> normalizedList = normalize(list); // add double operators.
+            return normalizedList;
 
         } catch (Exception ex) {
             ex.printStackTrace();
