@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 
+
 public class Parser {
 
     static ReservedTokens tokenLookup = new ReservedTokens();
@@ -56,9 +57,11 @@ public class Parser {
 
     public static ArrayList<Particle> parseToParticles(String code) {
         ArrayList<Particle> programSet = new ArrayList<Particle>();
-        StringTokenizer tokenizer = new StringTokenizer(code, " {}.|&+-*/;,:=<>?()[]\"", true);
+        StringTokenizer tokenizer = new StringTokenizer(code, " {}.|&+-*/;,:=<>?!()[]\"", true);
+        int pos = 0;
         while (tokenizer.hasMoreTokens()) {
             String tok = tokenizer.nextToken();
+            pos++;
             if (tok.equals("\"")) {
                 while (tokenizer.hasMoreTokens()) {
                     String nxt = tokenizer.nextToken();
@@ -85,7 +88,111 @@ public class Parser {
                 }
             }
         }
+        programSet = normalize(programSet);
         return programSet;
+    }
+
+    public static ArrayList<Particle> normalize(ArrayList<Particle> list)
+    {
+        ArrayList<Particle> newList = new ArrayList<Particle>();
+        for(int i = 0; i < list.size(); i++ ) {
+            Particle p = list.get(i);
+            try {
+                if( p.reservedToken ) {
+                    if (p.token.equals(Token.PLUS)) {
+                        Particle pp = list.get(i + 1);
+                        if (pp.token.equals(Token.PLUS)) {
+                            Particle fp = new Particle();
+                            fp.token = Token.INCREMENT;
+                            fp.reservedToken = true;
+                            newList.add(pp);
+                            i++;
+                        } else {
+                            newList.add(p);
+                        }
+                    }
+                    else if (p.token.equals(Token.MINUS)) {
+                        Particle pp = list.get(i + 1);
+                        if (pp.token.equals(Token.MINUS)) {
+                            Particle fp = new Particle();
+                            fp.token = Token.DECREMENT;
+                            fp.reservedToken = true;
+                            newList.add(pp);
+                            i++;
+                        }  else {
+                            newList.add(p);
+                        }
+                    }
+                    else if (p.token.equals(Token.GT)) {
+                        Particle pp = list.get(i + 1);
+                        if (pp.token.equals(Token.ASSIGNMENT)) {
+                            Particle fp = new Particle();
+                            fp.token = Token.GTE;
+                            fp.reservedToken = true;
+                            newList.add(pp);
+                            i++;
+                        }  else {
+                            newList.add(p);
+                        }
+                    }
+                    else if (p.token.equals(Token.LT)) {
+                        Particle pp = list.get(i + 1);
+                        if (pp.token.equals(Token.ASSIGNMENT)) {
+                            Particle fp = new Particle();
+                            fp.token = Token.LTE;
+                            fp.reservedToken = true;
+                            newList.add(pp);
+                            i++;
+                        }  else {
+                            newList.add(p);
+                        }
+                    }
+                    else if (p.token.equals(Token.AND)) {
+                        Particle pp = list.get(i + 1);
+                        if (pp.token.equals(Token.AND)) {
+                            Particle fp = new Particle();
+                            fp.token = Token.LOGICAL_AND;
+                            fp.reservedToken = true;
+                            newList.add(pp);
+                            i++;
+                        }  else {
+                            newList.add(p);
+                        }
+                    }
+                    else if (p.token.equals(Token.NOT)) {
+                        Particle pp = list.get(i + 1);
+                        if (pp.token.equals(Token.ASSIGNMENT)) {
+                            Particle fp = new Particle();
+                            fp.token = Token.NOT_EQUAL;
+                            fp.reservedToken = true;
+                            newList.add(pp);
+                            i++;
+                        }  else {
+                            newList.add(p);
+                        }
+                    }
+                    else if (p.token.equals(Token.ASSIGNMENT)) {
+                        Particle pp = list.get(i + 1);
+                        if (pp.token.equals(Token.ASSIGNMENT)) {
+                            Particle fp = new Particle();
+                            fp.token = Token.EQUAL;
+                            fp.reservedToken = true;
+                            newList.add(pp);
+                            i++;
+                        }  else {
+                            newList.add(p);
+                        }
+                    }
+                    else {
+                        newList.add(p);
+                    }
+                }
+                else {
+                    newList.add(p);
+                }
+            } catch( Exception ex) { }
+        }
+        return newList;
     }
 
     public static boolean isNumeric(String strNum) {

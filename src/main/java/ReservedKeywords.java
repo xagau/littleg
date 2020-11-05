@@ -24,6 +24,7 @@ public class ReservedKeywords {
         reservedKeywords.put("break", Keyword.BREAK);
         reservedKeywords.put("null", Keyword.NULL);
         reservedKeywords.put("new", Keyword.NEW);
+        reservedKeywords.put("else", Keyword.ELSE);
     }
 
     public Keyword get(String key)

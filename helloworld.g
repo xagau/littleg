@@ -8,6 +8,24 @@ class Main {
     string test = "this is a test";
     boolean bb = false;
 
+    string functionTestA()
+    {
+        if(!bb) {
+            println("bb is false");
+        }
+
+        if(bb != true ) {
+            println("bb is false");
+        }
+
+        if(bb == false ) {
+            println("bb is false ");
+        } else {
+            println("bb is true ");
+        }
+
+    }
+
     decimal functionTest(decimal A, decimal B)
     {
         return A + B + Z; # add A + B
@@ -47,6 +65,18 @@ class Three {
     string testTwo = "This is a test " + x + " some more string.";
 
     string gotcha( arguments ) {
+
+        if( x == x ) {
+            return "True";
+        }
+        if( x != x ) {
+            return "True";
+        }
+
+        x++;
+        y++;
+        z--;
+
         return testTwo;
     }
 }

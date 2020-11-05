@@ -13,5 +13,6 @@ public enum Keyword {
     NULL,
     SWITCH,
     CASE,
-    NEW
+    NEW,
+    ELSE
 }

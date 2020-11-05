@@ -11,6 +11,7 @@ public enum Token {
     GTE,
     LTE,
     EQUAL,
+    NOT,
     NOT_EQUAL,
     OPEN_BLOCK,
     CLOSE_BLOCK,
@@ -25,5 +26,7 @@ public enum Token {
     OPTION_OF,
     OPEN_INDEX,
     CLOSE_INDEX,
+    LOGICAL_AND,
+    LOGICAL_OR,
     NOT_A_TOKEN;
 }
