@@ -3,13 +3,17 @@ little-g programming language
 
 Much more advanced programming language than VASM.
 Littleg attempts to evaluate sophisitcated expressions, 
-objects, large decimal numbers and a default 64 bit byte instruction type.
+objects, strings, characters, enum types, native support 
+for large decimal numbers and a default 64 bit byte instruction type.
 
 The project is far from complete - however colourized particles
 are now compiled, classes contain particle subsets.
 
 Next steps will be (in no particular order):
- - to evaluate complex expressions to a single value
+ 
+ - General clean up and refactoring and optimization of Particle classes
+
+ - To evaluate complex expressions to a single value
 
  - Add error handling
  
@@ -36,5 +40,5 @@ Next steps will be (in no particular order):
  
  - Self compilation as proof of the language being turing complete.
  
- 
+ - Automatic Garbage collection for unreferenced memory on pop operations. 
  
