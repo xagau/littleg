@@ -25,53 +25,149 @@
 import java.math.BigDecimal;
 
 public class Particle {
-    public boolean reservedKeyword = false;
-    public boolean namedItem = false;
-    public boolean literalValue = false;
-    public boolean reservedToken = false;
-    public boolean namedFunction = false;
+    private boolean reservedKeyword = false;
+    private boolean namedItem = false;
+    private boolean literalValue = false;
+    private boolean reservedToken = false;
+    private boolean namedFunction = false;
 
-    public String raw = "";
+    private String raw = "";
 
-    public Keyword keyword = null;
-    public Token token = null;
-    public String name = null;
-    public String stringValue = null;
-    public BigDecimal decimalValue = null;
-    public Boolean booleanValue = null;
+    private Keyword keyword = null;
+    private Token token = null;
+    private String name = null;
+    private String stringValue = null;
+    private BigDecimal decimalValue = null;
+    private Boolean booleanValue = null;
 
     public Particle(String raw){
-        this.raw = raw;
+        this.setRaw(raw);
     }
 
     public String toString()
     {
         String str = "";
-        if( reservedKeyword ){
-            str += "Is a keyword:" + keyword.toString();
+        if(isReservedKeyword()){
+            str += "Is a keyword:" + getKeyword().toString();
         }
-        if( reservedToken ){
-            str += "Is a token:" + token.toString();
+        if(isReservedToken()){
+            str += "Is a token:" + getToken().toString();
         }
-        if( literalValue ){
-            str += "Is a literalValue:" + literalValue + "[";
-            if( stringValue != null ){
-                str += "string:" + stringValue;
+        if(isLiteralValue()){
+            str += "Is a literalValue:" + isLiteralValue() + "[";
+            if( getStringValue() != null ){
+                str += "string:" + getStringValue();
             }
-            if( booleanValue != null ){
-                str += "boolean:" + booleanValue.toString();
+            if( getBooleanValue() != null ){
+                str += "boolean:" + getBooleanValue().toString();
             }
-            if( decimalValue != null ){
-                str += "decimal:" + decimalValue.toString();
+            if( getDecimalValue() != null ){
+                str += "decimal:" + getDecimalValue().toString();
             }
             str += "]";
         }
-        if( namedItem ){
-            str += "Is a namedItem:" + namedItem + " [" + name + "]";
+        if(isNamedItem()){
+            str += "Is a namedItem:" + isNamedItem() + " [" + getName() + "]";
         }
-        if( namedFunction ){
-            str += "Is a namedFunction:" + namedFunction + " [" + name + "]";
+        if(isNamedFunction()){
+            str += "Is a namedFunction:" + isNamedFunction() + " [" + getName() + "]";
         }
         return str;
+    }
+
+    public boolean isReservedKeyword() {
+        return reservedKeyword;
+    }
+
+    public void setReservedKeyword(boolean reservedKeyword) {
+        this.reservedKeyword = reservedKeyword;
+    }
+
+    public boolean isNamedItem() {
+        return namedItem;
+    }
+
+    public void setNamedItem(boolean namedItem) {
+        this.namedItem = namedItem;
+    }
+
+    public boolean isLiteralValue() {
+        return literalValue;
+    }
+
+    public void setLiteralValue(boolean literalValue) {
+        this.literalValue = literalValue;
+    }
+
+    public boolean isReservedToken() {
+        return reservedToken;
+    }
+
+    public void setReservedToken(boolean reservedToken) {
+        this.reservedToken = reservedToken;
+    }
+
+    public boolean isNamedFunction() {
+        return namedFunction;
+    }
+
+    public void setNamedFunction(boolean namedFunction) {
+        this.namedFunction = namedFunction;
+    }
+
+    public String getRaw() {
+        return raw;
+    }
+
+    public void setRaw(String raw) {
+        this.raw = raw;
+    }
+
+    public Keyword getKeyword() {
+        return keyword;
+    }
+
+    public void setKeyword(Keyword keyword) {
+        this.keyword = keyword;
+    }
+
+    public Token getToken() {
+        return token;
+    }
+
+    public void setToken(Token token) {
+        this.token = token;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getStringValue() {
+        return stringValue;
+    }
+
+    public void setStringValue(String stringValue) {
+        this.stringValue = stringValue;
+    }
+
+    public BigDecimal getDecimalValue() {
+        return decimalValue;
+    }
+
+    public void setDecimalValue(BigDecimal decimalValue) {
+        this.decimalValue = decimalValue;
+    }
+
+    public Boolean getBooleanValue() {
+        return booleanValue;
+    }
+
+    public void setBooleanValue(Boolean booleanValue) {
+        this.booleanValue = booleanValue;
     }
 }
