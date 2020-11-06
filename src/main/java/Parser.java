@@ -47,8 +47,9 @@ public class Parser {
                     ArrayList<Particle> subset = new ArrayList<Particle>();
                     subset.add(p);
                     Clazz clazz = new Clazz();
-                    Particle tmp = list.get(i + 1);
-                    String name = tmp.getName();
+                    Particle holder = list.get(i + 1);
+                    String name = holder.getName();
+                    System.out.println("Adding class:" + name);
                     int block = 0;
                     boolean started = false;
                     for (int j = i; j < list.size(); j++) {
@@ -79,10 +80,8 @@ public class Parser {
     public static ArrayList<Particle> parseToParticles(String code) {
         ArrayList<Particle> programSet = new ArrayList<Particle>();
         StringTokenizer tokenizer = new StringTokenizer(code, " {}.|&+-*/;,:=<>?!()[]\"", true);
-        int pos = 0;
         while (tokenizer.hasMoreTokens()) {
             String tok = tokenizer.nextToken();
-            pos++;
             if (tok.equals("\"")) {
                 while (tokenizer.hasMoreTokens()) {
                     String nxt = tokenizer.nextToken();
@@ -99,6 +98,9 @@ public class Parser {
                         break;
                     }
                     if (nxt.equals(")")) {
+                        break;
+                    }
+                    if (nxt.equals(",")) {
                         break;
                     }
                     tok += nxt;
@@ -133,7 +135,7 @@ public class Parser {
         for(int i = 0; i < list.size(); i++ ) {
             Particle p = list.get(i);
             try {
-                if(p.isReservedToken()) {
+                if (p.isReservedToken()) {
                     if (p.getToken().equals(Token.PLUS)) {
                         Particle pp = list.get(i + 1);
                         try {
@@ -146,12 +148,10 @@ public class Parser {
                             } else {
                                 newList.add(p);
                             }
-                        }
-                        catch(Exception ex) {
+                        } catch (Exception ex) {
                             newList.add(p);
                         }
-                    }
-                    else if (p.getToken().equals(Token.MINUS)) {
+                    } else if (p.getToken().equals(Token.MINUS)) {
                         try {
                             Particle pp = list.get(i + 1);
                             if (pp.getToken().equals(Token.MINUS)) {
@@ -163,11 +163,10 @@ public class Parser {
                             } else {
                                 newList.add(p);
                             }
-                        } catch(Exception ex) {
+                        } catch (Exception ex) {
                             newList.add(p);
                         }
-                    }
-                    else if (p.getToken().equals(Token.GT)) {
+                    } else if (p.getToken().equals(Token.GT)) {
                         try {
                             Particle pp = list.get(i + 1);
                             if (pp.getToken().equals(Token.ASSIGNMENT)) {
@@ -182,8 +181,7 @@ public class Parser {
                         } catch (Exception ex) {
                             newList.add(p);
                         }
-                    }
-                    else if (p.getToken().equals(Token.LT)) {
+                    } else if (p.getToken().equals(Token.LT)) {
 
                         try {
                             Particle pp = list.get(i + 1);
@@ -196,11 +194,10 @@ public class Parser {
                             } else {
                                 newList.add(p);
                             }
-                        } catch(Exception ex) {
+                        } catch (Exception ex) {
                             newList.add(p);
                         }
-                    }
-                    else if (p.getToken().equals(Token.AND)) {
+                    } else if (p.getToken().equals(Token.AND)) {
                         try {
                             Particle pp = list.get(i + 1);
                             if (pp.getToken().equals(Token.AND)) {
@@ -212,11 +209,10 @@ public class Parser {
                             } else {
                                 newList.add(p);
                             }
-                        } catch(Exception ex) {
+                        } catch (Exception ex) {
                             newList.add(p);
                         }
-                    }
-                    else if (p.getToken().equals(Token.NOT)) {
+                    } else if (p.getToken().equals(Token.NOT)) {
                         try {
                             Particle pp = list.get(i + 1);
                             if (pp.getToken().equals(Token.ASSIGNMENT)) {
@@ -228,11 +224,10 @@ public class Parser {
                             } else {
                                 newList.add(p);
                             }
-                        } catch(Exception ex) {
+                        } catch (Exception ex) {
                             newList.add(p);
                         }
-                    }
-                    else if (p.getToken().equals(Token.ASSIGNMENT)) {
+                    } else if (p.getToken().equals(Token.ASSIGNMENT)) {
                         try {
                             Particle pp = list.get(i + 1);
                             if (pp.getToken().equals(Token.ASSIGNMENT)) {
@@ -244,34 +239,31 @@ public class Parser {
                             } else {
                                 newList.add(p);
                             }
-                        } catch(Exception ex) {
+                        } catch (Exception ex) {
                             newList.add(p);
                         }
                     }
-                    else if(p.isNamedItem()){
-                        try {
-                            Particle pp = list.get(i + 1);
-                            if (pp.getToken().equals(Token.OPEN_BRACE)) {
-                                Particle fp = new Particle(p.getRaw());
-                                fp.setNamedItem(false);
-                                fp.setNamedFunction(true);
-                                newList.add(fp);
-                            } else {
-                                newList.add(p);
-                            }
-                        } catch(Exception ex) {
-                            newList.add(p);
-                        }
+                } else if (p.isNamedItem()) {
+                    try {
+                        Particle pp = list.get(i + 1);
 
-                    }
-                    else {
+                        if (pp.getToken().equals(Token.OPEN_BRACE)) {
+                            Particle fp = new Particle(p.getRaw());
+                            System.out.println("Prospective Function:" + p.getRaw());
+                            fp.setNamedItem(false);
+                            fp.setNamedFunction(true);
+                            newList.add(fp);
+                        } else {
+                            newList.add(p);
+                        }
+                    } catch (Exception ex) {
                         newList.add(p);
                     }
+
                 }
-                else {
-                    newList.add(p);
-                }
-            } catch( Exception ex) { }
+            } catch(Exception ex) {
+                newList.add(p);
+            }
         }
         return newList;
     }
@@ -318,8 +310,14 @@ public class Parser {
             particle.setDecimalValue(new BigDecimal(tok));
             particle.setLiteralValue(true);
             return particle;
-        } else {
+        } else if( tok.equals("\n") ) {
+            particle.setToken(Token.CRLF);
+            particle.setReservedToken(true);
+            return particle;
+        }
+        else {
             particle.setNamedItem(true);
+            tok = tok.replaceAll(" ", "");
             particle.setName(tok);
             return particle;
         }

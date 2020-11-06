@@ -52,5 +52,6 @@ public enum Token {
     CLOSE_INDEX,
     LOGICAL_AND,
     LOGICAL_OR,
+    CRLF,
     NOT_A_TOKEN;
 }

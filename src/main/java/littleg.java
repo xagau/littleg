@@ -29,12 +29,22 @@ public class littleg {
 
     public static void main(String[] args) {
         try {
-            if( args.length < 0 ){
+            if( args != null ) {
+                // tmp for building.
+                args = new String[]{"helloworld.g"};
+            }
+            if (args.length < 0) {
                 System.out.println("littleg file.g");
             }
             Loader loader = new Loader(new File(args[0]));
             HashMap<String, Clazz> list = loader.compile();
-            Clazz main = list.get("Four");
+            String target = "Four";
+            Clazz main = list.get(target);
+
+            if( main == null ){
+                System.out.println("Target class:" + target + " could not be found");
+                return;
+            }
 
             for(int i = 0; i < main.getBodySet().size(); i++ ){
                 System.out.println(main.getBodySet().get(i));

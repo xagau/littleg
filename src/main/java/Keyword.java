@@ -32,6 +32,7 @@ public enum Keyword {
     FOR,
     WHILE,
     BREAK,
+    VOID,
     CONTINUE,
     RETURN,
     NULL,

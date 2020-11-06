@@ -34,6 +34,7 @@ public class ReservedKeywords {
     public void populate() {
         reservedKeywords.put("if", Keyword.IF);
         reservedKeywords.put("decimal", Keyword.DECIMAL);
+        reservedKeywords.put("void", Keyword.VOID);
         reservedKeywords.put("class", Keyword.CLASS);
         reservedKeywords.put("continue", Keyword.CONTINUE);
         reservedKeywords.put("for", Keyword.FOR);
