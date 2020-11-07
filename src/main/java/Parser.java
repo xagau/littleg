@@ -66,6 +66,8 @@ public class Parser {
                         subset.add(particle);
                         if (started && block == 0) {
                             clazz.setBodySet(subset);
+
+
                             map.put(name, clazz);
                             i = j++;
                             break;
@@ -249,7 +251,6 @@ public class Parser {
 
                         if (pp.getToken().equals(Token.OPEN_BRACE)) {
                             Particle fp = new Particle(p.getRaw());
-                            System.out.println("Prospective Function:" + p.getRaw());
                             fp.setNamedItem(false);
                             fp.setNamedFunction(true);
                             newList.add(fp);

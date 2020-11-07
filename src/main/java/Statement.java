@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 /** Copyright (c) 2020 Sean Beecroft,
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -23,13 +25,15 @@
  */
 
 class Statement {
-    private String statement = null;
 
-    public String getStatement() {
-        return statement;
+    private ArrayList<Particle> subset = new ArrayList<Particle>();
+
+    public void add(Particle p)
+    {
+        subset.add(p);
     }
 
-    public void setStatement(String statement) {
-        this.statement = statement;
+    public Particle get(int i){
+        return subset.get(i);
     }
 }

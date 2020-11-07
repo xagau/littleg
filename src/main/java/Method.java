@@ -25,20 +25,63 @@
 import java.util.ArrayList;
 
 public class Method {
+    private VisibilityModifier visibility = null;
     private String signature;
-    private ArrayList arguments = new ArrayList();
+    private PrimitiveType returnType = null;
+    private ArrayList<Statement> arguments = new ArrayList<Statement>();
     private ArrayList<Statement> body = new ArrayList<Statement>();
-    Variable returnValue = null;
-
+    private Variable returnValue = null;
     public Variable invoke(ArrayList arguments)
     {
         return null;
     }
-
     public Variable invoke()
     {
         return invoke(null);
     }
+    public String getSignature() {
+        return signature;
+    }
+    public void setSignature(String signature) {
+        this.signature = signature;
+    }
+    public PrimitiveType getReturnType() {
+        return returnType;
+    }
 
+    public void setReturnType(PrimitiveType returnType) {
+        this.returnType = returnType;
+    }
 
+    public ArrayList<Statement> getArguments() {
+        return arguments;
+    }
+
+    public void setArguments(ArrayList<Statement> arguments) {
+        this.arguments = arguments;
+    }
+
+    public ArrayList<Statement> getBody() {
+        return body;
+    }
+
+    public void setBody(ArrayList<Statement> body) {
+        this.body = body;
+    }
+
+    public Variable getReturnValue() {
+        return returnValue;
+    }
+
+    public void setReturnValue(Variable returnValue) {
+        this.returnValue = returnValue;
+    }
+
+    public VisibilityModifier getVisibility() {
+        return visibility;
+    }
+
+    public void setVisibility(VisibilityModifier visibility) {
+        this.visibility = visibility;
+    }
 }
