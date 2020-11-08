@@ -25,6 +25,8 @@
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
 
 public class Loader {
     File file = null;
@@ -43,7 +45,21 @@ public class Loader {
             }
             ArrayList<Particle> list = Parser.parse(pFile);
             HashMap<String, Clazz> map = Parser.parseClasses(list);
-           return map;
+            Set set = map.keySet();
+            Iterator iterator = set.iterator();
+            while( iterator.hasNext() ){
+                Clazz clazz = map.get((String)iterator.next());
+                // parse out method definitions within class. For method calls that belong to external classes, leave an undefined/defined reference.
+                HashMap<String, Method> methodSet = Parser.parseMethods(clazz);
+                clazz.setMethodSet(methodSet);
+
+                // Parse out global scope variables to class.
+                HashMap<String, Variable> variableSet = Parser.parseVariables(clazz);
+                clazz.setVariableSet(variableSet);
+
+            }
+
+            return map;
         } catch (Exception e) {
             e.printStackTrace();
         }

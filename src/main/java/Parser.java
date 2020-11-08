@@ -34,6 +34,20 @@ public class Parser {
     static ReservedTokens tokenLookup = new ReservedTokens();
     static ReservedKeywords keywordLookup = new ReservedKeywords();
 
+    public static HashMap<String, Method> parseMethods(Clazz clazz)
+    {
+        // TODO
+        HashMap<String, Method> methodSet = new HashMap<String, Method>();
+        return methodSet;
+    }
+
+    public static HashMap<String, Variable> parseVariables(Clazz clazz)
+    {
+        // TODO
+        HashMap<String, Variable> variableSet = new HashMap<String, Variable>();
+        return variableSet;
+    }
+
     public static HashMap<String, Clazz> parseClasses(ArrayList<Particle> list) {
         HashMap<String, Clazz> map = new HashMap<String, Clazz>();
         try {
