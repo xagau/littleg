@@ -20,7 +20,7 @@ import java.util.ArrayList;
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
- * @author Sean Beecorft (aka xagau) https://www.github.com/xagau
+ * @author Sean Beecroft (aka xagau) https://www.github.com/xagau
  *
  */
 
