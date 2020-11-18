@@ -43,36 +43,37 @@ class Main {
     string functionTestA()
     {
         if(!bb) {
-            println("bb is false");
+            # console is just a temporary console printing function.
+            console("bb is false");
         }
         if(bb != true ) {
-            println("bb is false");
+            console("bb is false");
         }
         if(bb == false ) {
-            println("bb is false ");
+            console("bb is false ");
         } else {
-            println("bb is true ");
+            console("bb is true ");
         }
         return "Nothing important";
     }
 
     decimal functionTest(decimal A, decimal B)
     {
-        return A + B + Z; # add A + B + Z
+        return A + B + Z; # add A + B + Z - return a big decimal as a test - will use stack space on POP
     }
 
     # test ability to declare variables in class body.
     boolean b2 = false;
 
     boolean main( ) {
-        decimal a = 2.2034909349503490590349509345;
+        decimal a = 2.2034909349503490590349509345; # Another big decimal test.
         for(decimal d = 0; d < 10; d++ ) {
             # replace with suitable logging facility
-            println(d);
+            console(d);
         }
         Two two = new Two();
-        println(two.getHelloWorld()); # test instance invocation
-        println(functionTest(a,2.5)); # test function stack management
+        console(two.getHelloWorld()); # test instance invocation
+        console(functionTest(a,2.5)); # test function stack management - will use stack space on PUSH
 
         return true;
     }
@@ -95,6 +96,7 @@ class Three {
         if( x == x ) {
             return "True"; # Test EQUALITY
         }
+        # should never happen - compiler should issue a warning here or simply exit - or snip dead code.
         if( x != x ) {
             return "True"; # Test NOT_EQUAL
         }
