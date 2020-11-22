@@ -38,6 +38,10 @@ public class Parser {
     {
         // TODO
         HashMap<String, Method> methodSet = new HashMap<String, Method>();
+        ArrayList<Particle> list = clazz.getBodySet();
+
+
+
         return methodSet;
     }
 
@@ -45,28 +49,40 @@ public class Parser {
     {
         // TODO
         HashMap<String, Variable> variableSet = new HashMap<String, Variable>();
+        ArrayList<Particle> list = clazz.getBodySet();
+
+        for(int i = 0; i < list.size(); i++ ) {
+            Particle p = list.get(i);
+            //System.out.println(p);
+        }
         return variableSet;
     }
+
 
     public static HashMap<String, Clazz> parseClasses(ArrayList<Particle> list) {
         HashMap<String, Clazz> map = new HashMap<String, Clazz>();
         try {
             for (int i = 0; i < list.size(); i++) {
                 Particle p = list.get(i);
+                System.out.println("particle@" + i + ":" + p);
                 if (p == null) {
                     System.out.println("First particle is null");
                     System.exit(1);
                 }
-                if (p.getKeyword().equals(Keyword.CLASS)) {
+                boolean expression = false;
+                try { expression = p.getKeyword().equals(Keyword.CLASS); } catch(Exception ex) { ex.printStackTrace(); }
+                if (expression) {
                     ArrayList<Particle> subset = new ArrayList<Particle>();
                     subset.add(p);
                     Clazz clazz = new Clazz();
                     Particle holder = list.get(i + 1);
                     String name = holder.getName();
+                    holder.setNamedClass(true);
+                    subset.add(holder);
                     System.out.println("Adding class:" + name);
                     int block = 0;
                     boolean started = false;
-                    for (int j = i; j < list.size(); j++) {
+                    for (int j = i+1; j < list.size(); j++) {
                         Particle particle = list.get(j);
                         try {
                             if (particle.getToken().equals(Token.OPEN_BLOCK)) {
@@ -77,6 +93,7 @@ public class Parser {
                             }
                         } catch (Exception ex) {
                         }
+                        System.out.println("Adding subset particle " + particle + " to class " + name);
                         subset.add(particle);
                         if (started && block == 0) {
                             clazz.setBodySet(subset);
@@ -89,7 +106,7 @@ public class Parser {
                     }
                 }
             }
-        } catch(Exception ex) {}
+        } catch(Exception ex) { ex.printStackTrace(); }
         return map;
     }
 
@@ -129,9 +146,9 @@ public class Parser {
                 programSet.add(p);
                 try {
                     boolean interactive = false;
-                    boolean verbose = false;
+                    boolean verbose = true;
                     if (verbose) {
-                        System.out.println(p);
+                        System.out.println("::" + p + " " + tok);
                     }
                     if (interactive) {
                         System.in.read();
@@ -150,6 +167,7 @@ public class Parser {
         ArrayList<Particle> newList = new ArrayList<Particle>();
         for(int i = 0; i < list.size(); i++ ) {
             Particle p = list.get(i);
+            System.out.println("normalize:" + i + " " + p);
             try {
                 if (p.isReservedToken()) {
                     if (p.getToken().equals(Token.PLUS)) {
@@ -258,17 +276,49 @@ public class Parser {
                         } catch (Exception ex) {
                             newList.add(p);
                         }
+                    } else if (p.getToken().equals(Token.OPEN_BRACE)) {
+                        newList.add(p);
+                    } else if (p.getToken().equals(Token.CLOSE_BRACE)) {
+                        newList.add(p);
+                    } else if (p.getToken().equals(Token.OPEN_BLOCK)) {
+                        newList.add(p);
+                    } else if (p.getToken().equals(Token.CLOSE_BLOCK)) {
+                        newList.add(p);
+                    } else if (p.getToken().equals(Token.OPEN_INDEX)) {
+                        newList.add(p);
+                    } else if (p.getToken().equals(Token.CLOSE_INDEX)) {
+                        newList.add(p);
+                    } else if (p.getToken().equals(Token.MEMBER_OF)) {
+                        newList.add(p);
+                    } else if (p.getToken().equals(Token.END_STATEMENT)) {
+                        newList.add(p);
                     }
+                }
+                else if(p.isReservedKeyword() ) {
+                    newList.add(p);
                 } else if (p.isNamedItem()) {
                     try {
                         Particle pp = list.get(i + 1);
-
                         if (pp.getToken().equals(Token.OPEN_BRACE)) {
                             Particle fp = new Particle(p.getRaw());
                             fp.setNamedItem(false);
                             fp.setNamedFunction(true);
                             newList.add(fp);
-                        } else {
+                        } else  if (pp.getToken().equals(Token.OPEN_BLOCK)) {
+                            try {
+                                Particle prevp = list.get(i - 1);
+                                if (prevp.isReservedKeyword() && prevp.getKeyword().equals(Keyword.CLASS)) {
+                                    Particle fp = new Particle(p.getRaw());
+                                    fp.setNamedItem(true);
+                                    fp.setNamedFunction(false);
+                                    fp.setNamedClass(true);
+                                    fp.setName(p.getName());
+                                    newList.add(fp);
+                                }
+                            } catch(Exception ex) {
+                                newList.add(p);
+                            }
+                        }else {
                             newList.add(p);
                         }
                     } catch (Exception ex) {

@@ -42,6 +42,9 @@ class Main {
     boolean bb = false;
     string functionTestA()
     {
+
+        decimal h = 1 + 2 + 3; # bug
+
         if(!bb) {
             # console is just a temporary console printing function.
             console("bb is false");

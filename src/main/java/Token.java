@@ -23,35 +23,35 @@
  */
 
 public enum Token {
-    PLUS,
-    MINUS,
-    MULTIPLY,
-    DIVIDE,
-    INCREMENT,
-    DECREMENT,
-    ASSIGNMENT,
-    GT,
-    LT,
-    GTE,
-    LTE,
-    EQUAL,
-    NOT,
-    NOT_EQUAL,
-    OPEN_BLOCK,
-    CLOSE_BLOCK,
-    OPEN_BRACE,
-    CLOSE_BRACE,
-    AND,
-    OR,
-    COMMA,
-    END_STATEMENT,
+    PLUS, // +
+    MINUS, // -
+    MULTIPLY, // *
+    DIVIDE, // /
+    INCREMENT, // ++
+    DECREMENT, // --
+    ASSIGNMENT, // =
+    GT, // >
+    LT, // <
+    GTE, // >=
+    LTE, // <=
+    EQUAL, // ==
+    NOT, // !
+    NOT_EQUAL, // !=
+    OPEN_BLOCK, // {
+    CLOSE_BLOCK, // }
+    OPEN_BRACE, // (
+    CLOSE_BRACE, // )
+    AND, // &
+    OR, // |
+    COMMA, // ,
+    END_STATEMENT, // ;
     TERMINATE,
-    MEMBER_OF,
-    OPTION_OF,
-    OPEN_INDEX,
-    CLOSE_INDEX,
-    LOGICAL_AND,
-    LOGICAL_OR,
-    CRLF,
+    MEMBER_OF, // .
+    OPTION_OF, // :
+    OPEN_INDEX, // [
+    CLOSE_INDEX, // ]
+    LOGICAL_AND, // &&
+    LOGICAL_OR, // ||
+    CRLF, // \n
     NOT_A_TOKEN;
 }

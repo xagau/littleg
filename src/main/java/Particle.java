@@ -27,6 +27,7 @@ import java.math.BigDecimal;
 public class Particle {
     private boolean reservedKeyword = false;
     private boolean namedItem = false;
+    private boolean namedClass = false;
     private boolean literalValue = false;
     private boolean reservedToken = false;
     private boolean namedFunction = false;
@@ -81,6 +82,10 @@ public class Particle {
 
     public void setReservedKeyword(boolean reservedKeyword) {
         this.reservedKeyword = reservedKeyword;
+    }
+
+    public boolean isNamedClass() {
+        return namedClass;
     }
 
     public boolean isNamedItem() {
@@ -169,5 +174,9 @@ public class Particle {
 
     public void setBooleanValue(Boolean booleanValue) {
         this.booleanValue = booleanValue;
+    }
+
+    public void setNamedClass(boolean namedClass) {
+        this.namedClass = namedClass;
     }
 }

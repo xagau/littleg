@@ -42,16 +42,20 @@ class Main {
     boolean bb = false;
     string functionTestA()
     {
+
+        decimal h = 1 + 2 + 3; 
+
         if(!bb) {
-            println("bb is false");
+            
+            console("bb is false");
         }
         if(bb != true ) {
-            println("bb is false");
+            console("bb is false");
         }
         if(bb == false ) {
-            println("bb is false ");
+            console("bb is false ");
         } else {
-            println("bb is true ");
+            console("bb is true ");
         }
         return "Nothing important";
     }
@@ -65,14 +69,14 @@ class Main {
     boolean b2 = false;
 
     boolean main( ) {
-        decimal a = 2.2034909349503490590349509345;
+        decimal a = 2.2034909349503490590349509345; 
         for(decimal d = 0; d < 10; d++ ) {
             
-            println(d);
+            console(d);
         }
         Two two = new Two();
-        println(two.getHelloWorld()); 
-        println(functionTest(a,2.5)); 
+        console(two.getHelloWorld()); 
+        console(functionTest(a,2.5)); 
 
         return true;
     }
@@ -95,6 +99,7 @@ class Three {
         if( x == x ) {
             return "True"; 
         }
+        
         if( x != x ) {
             return "True"; 
         }

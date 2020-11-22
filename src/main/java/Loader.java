@@ -35,16 +35,45 @@ public class Loader {
         this.file = file;
     }
 
+    public void printNormalizedList(ArrayList<Particle> list)
+    {
+        for(int i = 0; i < list.size(); i++){
+            Particle p = list.get(i);
+            try {
+                boolean interactive = false;
+                boolean verbose =true;
+                if (verbose) {
+                    System.out.println("::" + i + ":" + p );
+                }
+                if (interactive) {
+                    System.in.read();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+    }
+
     public HashMap<String, Clazz> compile()
     {
         try {
+            System.out.println("Run preprocessor");
             Preprocessor processor = new Preprocessor();
             File pFile = processor.process(file);
             if(pFile == null ){
                 System.out.println("Preprocessor ran into an error");
             }
+            System.out.println("Parse particles from file");
             ArrayList<Particle> list = Parser.parse(pFile);
+
+            printNormalizedList(list);
+
+            System.out.println("Parse classes from file particle list");
             HashMap<String, Clazz> map = Parser.parseClasses(list);
+            System.out.println("file particle list contained:" + map.size() + " classes");
+
             Set set = map.keySet();
             Iterator iterator = set.iterator();
             while( iterator.hasNext() ){

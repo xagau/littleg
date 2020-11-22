@@ -37,9 +37,9 @@ public class littleg {
                 System.out.println("littleg file.g");
             }
             Loader loader = new Loader(new File(args[0]));
-            HashMap<String, Clazz> list = loader.compile();
+            HashMap<String, Clazz> map = loader.compile();
             String target = "Four";
-            Clazz main = list.get(target);
+            Clazz main = map.get(target);
 
             if( main == null ){
                 System.out.println("Target class:" + target + " could not be found");
