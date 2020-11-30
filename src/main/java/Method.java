@@ -27,11 +27,13 @@ import java.util.ArrayList;
 public class Method {
     private VisibilityModifier visibility = null;
     private String signature;
+    private String name;
+    private int endIndex = 0;
     private PrimitiveType returnType = null;
-    private ArrayList<Statement> arguments = new ArrayList<Statement>();
-    private ArrayList<Statement> body = new ArrayList<Statement>();
+    private ArrayList<Particle> arguments = new ArrayList<Particle>();
+    private ArrayList<Particle> body = new ArrayList<Particle>();
     private Variable returnValue = null;
-    public Variable invoke(ArrayList arguments)
+    public Variable invoke(ArrayList<Particle> arguments)
     {
         return null;
     }
@@ -53,19 +55,19 @@ public class Method {
         this.returnType = returnType;
     }
 
-    public ArrayList<Statement> getArguments() {
+    public ArrayList<Particle> getArguments() {
         return arguments;
     }
 
-    public void setArguments(ArrayList<Statement> arguments) {
+    public void setArguments(ArrayList<Particle> arguments) {
         this.arguments = arguments;
     }
 
-    public ArrayList<Statement> getBody() {
+    public ArrayList<Particle> getBody() {
         return body;
     }
 
-    public void setBody(ArrayList<Statement> body) {
+    public void setBody(ArrayList<Particle> body) {
         this.body = body;
     }
 
@@ -83,5 +85,21 @@ public class Method {
 
     public void setVisibility(VisibilityModifier visibility) {
         this.visibility = visibility;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getEndIndex() {
+        return endIndex;
+    }
+
+    public void setEndIndex(int endIndex) {
+        this.endIndex = endIndex;
     }
 }

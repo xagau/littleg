@@ -41,9 +41,8 @@ public class Loader {
             Particle p = list.get(i);
             try {
                 boolean interactive = false;
-                boolean verbose =true;
-                if (verbose) {
-                    System.out.println("::" + i + ":" + p );
+                if (Globals.verbose) {
+                    System.out.println("raw::" + i + ":" + p );
                 }
                 if (interactive) {
                     System.in.read();
@@ -79,8 +78,10 @@ public class Loader {
             while( iterator.hasNext() ){
                 Clazz clazz = map.get((String)iterator.next());
                 // parse out method definitions within class. For method calls that belong to external classes, leave an undefined/defined reference.
+                System.out.println("Parse Methods for class:" + clazz.getName());
                 HashMap<String, Method> methodSet = Parser.parseMethods(clazz);
                 clazz.setMethodSet(methodSet);
+                Parser.index = 0; // reset the index to zero for the next class
 
                 // Parse out global scope variables to class.
                 HashMap<String, Variable> variableSet = Parser.parseVariables(clazz);

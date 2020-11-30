@@ -26,6 +26,7 @@ import java.util.ArrayList;
 
 class Statement {
 
+
     private ArrayList<Particle> subset = new ArrayList<Particle>();
 
     public void add(Particle p)

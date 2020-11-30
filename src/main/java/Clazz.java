@@ -32,6 +32,15 @@ public class Clazz {
     private String name = "";
     private ArrayList<Particle> bodySet = new ArrayList<Particle>();
 
+    public void addMethod(Method m){
+        methodSet.put(m.getSignature(), m);
+    }
+
+    public Method getMethod(String signature)
+    {
+        return methodSet.get(signature);
+    }
+
     public HashMap<String, Method> getMethodSet() {
         return methodSet;
     }

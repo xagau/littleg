@@ -34,15 +34,135 @@ public class Parser {
     static ReservedTokens tokenLookup = new ReservedTokens();
     static ReservedKeywords keywordLookup = new ReservedKeywords();
 
+    static int index = 0;
     public static HashMap<String, Method> parseMethods(Clazz clazz)
     {
-        // TODO
         HashMap<String, Method> methodSet = new HashMap<String, Method>();
-        ArrayList<Particle> list = clazz.getBodySet();
+
+        try {
+            // TODO
+            ArrayList<Particle> list = clazz.getBodySet();
 
 
+            System.out.println("Analyzing particles looking to extract methods from class:" + clazz.getName());
 
+            for (; index < list.size(); index++) {
+                Particle p = list.get(index);
+                Particle pp = list.get(index+1);
+                System.out.println(p);
+                if (p.isReservedKeyword() && pp.isNamedFunction()) {
+                    System.out.println("Got lead:" + pp.getName());
+                    //System.in.read();
+                    Method m = new Method();
+                    m.setName(pp.getName());
+                    if (p.getKeyword().equals(Keyword.DECIMAL)) {
+                        System.out.println("Found Method:" + m.getName());
+                        m.setReturnType(PrimitiveType.DECIMAL);
+                        m = parseMethod(m, list, clazz);
+                        clazz.addMethod(m);
+                        methodSet.put(m.getSignature(), m);
+
+                    } else if (p.getKeyword().equals(Keyword.BOOLEAN)) {
+                        System.out.println("Found Method:" + m.getName());
+                        m.setReturnType(PrimitiveType.BOOLEAN);
+                        m = parseMethod(m, list, clazz);
+                        clazz.addMethod(m);
+                        methodSet.put(m.getSignature(), m);
+
+                    } else if (p.getKeyword().equals(Keyword.VOID)) {
+                        System.out.println("Found Method:" + m.getName());
+                        m.setReturnType(PrimitiveType.VOID);
+                        m = parseMethod(m, list, clazz);
+                        clazz.addMethod(m);
+                        methodSet.put(m.getSignature(), m);
+
+                    } else if (p.getKeyword().equals(Keyword.STRING)) {
+                        System.out.println("Found Method:" + m.getName());
+                        m.setReturnType(PrimitiveType.STRING);
+                        m = parseMethod(m, list, clazz);
+                        clazz.addMethod(m);
+                        methodSet.put(m.getSignature(), m);
+
+
+                    } else if (p.getKeyword().equals(Keyword.OBJECT)) {
+                        System.out.println("Found Method:" + m.getName());
+                        m.setReturnType(PrimitiveType.OBJECT);
+                        m = parseMethod(m, list, clazz);
+                        clazz.addMethod(m);
+                        methodSet.put(m.getSignature(), m);
+
+                    }
+                }
+
+            }
+
+            return methodSet;
+
+        } catch(IndexOutOfBoundsException ex ) {
+            //ex.printStackTrace();
+            System.out.println("All methods extracted from " + clazz.getName());
+        }
         return methodSet;
+    }
+
+    public static Method parseMethod(Method m, ArrayList<Particle> list, Clazz clazz)
+    {
+        System.out.println("Parse Method:" + m.getName() + " of " + clazz.getName());
+
+        boolean arglistDone = false;
+        ArrayList<Particle> argumentList = new ArrayList<Particle>();
+        ArrayList<Particle> bodyList = new ArrayList<Particle>();
+
+        for(int j = index; j < list.size(); j++ ) {
+            try {
+                Particle pp = list.get(j);
+
+                //System.out.println("AMP:" + pp + " for " + m.getName() + "@" + j);
+                if (!arglistDone) {
+                    if (pp.isReservedToken() && pp.getToken().equals(Token.OPEN_BRACE)) {
+                        argumentList.add(pp);
+                    }
+                    else if (pp.isReservedToken() && pp.getToken().equals(Token.CLOSE_BRACE)) {
+                        argumentList.add(pp);
+                        arglistDone = true;
+                    } else {
+                        argumentList.add(pp);
+                    }
+                }
+                int block = 0;
+
+                if (pp.isReservedToken() && pp.getToken().equals(Token.OPEN_BLOCK)) {
+                    block++;
+                    bodyList.add(pp);
+                }
+                else if (pp.isReservedToken() && pp.getToken().equals(Token.CLOSE_BLOCK)) {
+                    block--;
+                    bodyList.add(pp);
+                    if (block == 0) {
+                        index = j;
+                        break;
+                    }
+                } else {
+                    bodyList.add(pp);
+                }
+            } catch (Exception ex) {
+                System.out.println("Here:" + ex.getMessage());
+                //ex.printStackTrace();
+            }
+        }
+
+        String argumentListStr = "";
+        for (int k = 0; k < argumentList.size(); k++) {
+            argumentListStr += ((Particle) argumentList.get(k)).getRaw() + " ";
+        }
+        String sig = argumentListStr.trim();
+        System.out.println("Adding signature for method:" + m.getName() + ":" + sig);
+        m.setBody(bodyList);
+        m.setArguments(argumentList);
+        m.setSignature(sig);
+        return m;
+
+
     }
 
     public static HashMap<String, Variable> parseVariables(Clazz clazz)
@@ -53,7 +173,6 @@ public class Parser {
 
         for(int i = 0; i < list.size(); i++ ) {
             Particle p = list.get(i);
-            //System.out.println(p);
         }
         return variableSet;
     }
@@ -64,7 +183,9 @@ public class Parser {
         try {
             for (int i = 0; i < list.size(); i++) {
                 Particle p = list.get(i);
-                System.out.println("particle@" + i + ":" + p);
+                if( Globals.verbose ) {
+                    System.out.println("particle@" + i + ":" + p);
+                }
                 if (p == null) {
                     System.out.println("First particle is null");
                     System.exit(1);
@@ -93,12 +214,11 @@ public class Parser {
                             }
                         } catch (Exception ex) {
                         }
-                        System.out.println("Adding subset particle " + particle + " to class " + name);
+                        //System.out.println("Adding subset particle " + particle + " to class " + name);
                         subset.add(particle);
                         if (started && block == 0) {
+                            clazz.setName(name);
                             clazz.setBodySet(subset);
-
-
                             map.put(name, clazz);
                             i = j++;
                             break;
@@ -146,7 +266,7 @@ public class Parser {
                 programSet.add(p);
                 try {
                     boolean interactive = false;
-                    boolean verbose = true;
+                    boolean verbose = false;
                     if (verbose) {
                         System.out.println("::" + p + " " + tok);
                     }
@@ -167,7 +287,10 @@ public class Parser {
         ArrayList<Particle> newList = new ArrayList<Particle>();
         for(int i = 0; i < list.size(); i++ ) {
             Particle p = list.get(i);
-            System.out.println("normalize:" + i + " " + p);
+
+            if( Globals.verbose ) {
+                System.out.println("normalize:" + i + " " + p);
+            }
             try {
                 if (p.isReservedToken()) {
                     if (p.getToken().equals(Token.PLUS)) {
@@ -280,6 +403,8 @@ public class Parser {
                         newList.add(p);
                     } else if (p.getToken().equals(Token.CLOSE_BRACE)) {
                         newList.add(p);
+                    } else if (p.getToken().equals(Token.COMMA)) {
+                        newList.add(p);
                     } else if (p.getToken().equals(Token.OPEN_BLOCK)) {
                         newList.add(p);
                     } else if (p.getToken().equals(Token.CLOSE_BLOCK)) {
@@ -303,6 +428,7 @@ public class Parser {
                             Particle fp = new Particle(p.getRaw());
                             fp.setNamedItem(false);
                             fp.setNamedFunction(true);
+                            fp.setName(p.getName());
                             newList.add(fp);
                         } else  if (pp.getToken().equals(Token.OPEN_BLOCK)) {
                             try {

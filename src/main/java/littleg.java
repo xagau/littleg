@@ -24,6 +24,8 @@
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
 
 public class littleg {
 
@@ -37,21 +39,35 @@ public class littleg {
                 System.out.println("littleg file.g");
             }
             Loader loader = new Loader(new File(args[0]));
+
             HashMap<String, Clazz> map = loader.compile();
-            String target = "Four";
+
+            System.out.println("Compiled:" + map.size() + " classes");
+
+            String target = "Main";
             Clazz main = map.get(target);
 
-            if( main == null ){
-                System.out.println("Target class:" + target + " could not be found");
-                return;
+            System.out.println(target + " contains " + main.getMethodSet().size() + " methods");
+
+            HashMap<String, Method> methodSetMap = main.getMethodSet();
+            Set set = methodSetMap.keySet();
+            Iterator iterator = set.iterator();
+            while( iterator.hasNext() ){
+                System.out.println("In map for " + target + ":" + (String)iterator.next());
             }
 
-            for(int i = 0; i < main.getBodySet().size(); i++ ){
-                System.out.println(main.getBodySet().get(i));
+            String signature = "boolean main ( )";
+            Method m = main.getMethod(signature);
+            if( m != null ) {
+                if( m.getBody() == null ){
+                    System.out.println(target + " class with function " + signature + " has a null body (no particles)");
+                } else {
+                    System.out.println(signature + " contained " + m.getBody().size() + " particles");
+                }
+            } else {
+                System.out.println(signature + " could not be found in " + target);
             }
-            // encapsulate
-            //Method m = main.getMethodSet().get("main");
-            //m.invoke();
+
 
         } catch(Exception ex) {
             ex.printStackTrace();
