@@ -26,6 +26,7 @@ import java.math.BigDecimal;
 
 public class Variable {
     private String name;
+    private String clazzType;
     private VisibilityModifier visibility = VisibilityModifier.PRIVATE;
     private PrimitiveType type = PrimitiveType.UNDEFINED;
 
@@ -101,5 +102,20 @@ public class Variable {
 
     public void setType(PrimitiveType type) {
         this.type = type;
+    }
+
+    public String toString(){
+        if( clazzType != null ){
+            return type.toString() + " " + clazzType + " class instance named " + getName() + ":" + getValue();
+        }
+        return type.toString() + " " + getName() + ":" + getValue();
+    }
+
+    public String getClazzType() {
+        return clazzType;
+    }
+
+    public void setClazzType(String clazzType) {
+        this.clazzType = clazzType;
     }
 }

@@ -32,13 +32,35 @@ public class Method {
     private PrimitiveType returnType = null;
     private ArrayList<Particle> arguments = new ArrayList<Particle>();
     private ArrayList<Particle> body = new ArrayList<Particle>();
+    private ArrayList<Variable> localVariables = new ArrayList<Variable>();
     private Variable returnValue = null;
     public Variable invoke(ArrayList<Particle> arguments)
     {
+        for (int i = 0; i < this.arguments.size(); i++) {
+                System.out.println("Defined Arguments :" + (Particle) this.arguments.get(i));
+        }
+
+        if( arguments == null ){
+            System.out.println("There are no arguments passed to this method");
+        } else {
+            for (int i = 0; i < arguments.size(); i++) {
+                System.out.println("Passed Arguments :" + (Particle) arguments.get(i));
+            }
+        }
+
+        for(int i = 0; i < localVariables.size(); i++){
+            System.out.println("Local Variables:" + (Variable)localVariables.get(i));
+        }
+
+        for(int i = 0; i < body.size(); i++){
+            System.out.println("Body Particles:" + (Particle)body.get(i));
+        }
+
         return null;
     }
     public Variable invoke()
     {
+
         return invoke(null);
     }
     public String getSignature() {
@@ -101,5 +123,13 @@ public class Method {
 
     public void setEndIndex(int endIndex) {
         this.endIndex = endIndex;
+    }
+
+    public ArrayList<Variable> getLocalVariables() {
+        return localVariables;
+    }
+
+    public void setLocalVariables(ArrayList<Variable> localVariables) {
+        this.localVariables = localVariables;
     }
 }

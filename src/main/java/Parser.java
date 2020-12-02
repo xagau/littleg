@@ -33,6 +33,7 @@ public class Parser {
 
     static ReservedTokens tokenLookup = new ReservedTokens();
     static ReservedKeywords keywordLookup = new ReservedKeywords();
+    static HashMap<String,Clazz> classLookup = new HashMap<String, Clazz>();
 
     static int index = 0;
     public static HashMap<String, Method> parseMethods(Clazz clazz)
@@ -107,11 +108,14 @@ public class Parser {
 
     public static Method parseMethod(Method m, ArrayList<Particle> list, Clazz clazz)
     {
+
         System.out.println("Parse Method:" + m.getName() + " of " + clazz.getName());
 
         boolean arglistDone = false;
         ArrayList<Particle> argumentList = new ArrayList<Particle>();
         ArrayList<Particle> bodyList = new ArrayList<Particle>();
+        ArrayList<Variable> localVariables = new ArrayList<Variable>();
+        boolean definedReturnType = false;
 
         for(int j = index; j < list.size(); j++ ) {
             try {
@@ -119,16 +123,40 @@ public class Parser {
 
                 //System.out.println("AMP:" + pp + " for " + m.getName() + "@" + j);
                 if (!arglistDone) {
-                    if (pp.isReservedToken() && pp.getToken().equals(Token.OPEN_BRACE)) {
-                        argumentList.add(pp);
-                    }
-                    else if (pp.isReservedToken() && pp.getToken().equals(Token.CLOSE_BRACE)) {
-                        argumentList.add(pp);
-                        arglistDone = true;
+                    if( definedReturnType == false ) {
+                        if (pp.isReservedKeyword() && definedReturnType == false) {
+                            if (pp.getKeyword().equals(Keyword.BOOLEAN)) {
+                                m.setReturnType(PrimitiveType.BOOLEAN);
+                                definedReturnType = true;
+                            } else if (pp.getKeyword().equals(Keyword.DECIMAL)) {
+                                m.setReturnType(PrimitiveType.DECIMAL);
+                                definedReturnType = true;
+                            } else if (pp.getKeyword().equals(Keyword.STRING)) {
+                                m.setReturnType(PrimitiveType.STRING);
+                                definedReturnType = true;
+                            } else if (pp.getKeyword().equals(Keyword.OBJECT)) {
+                                m.setReturnType(PrimitiveType.OBJECT);
+                                definedReturnType = true;
+                            } else if (pp.getKeyword().equals(Keyword.VOID)) {
+                                m.setReturnType(PrimitiveType.VOID);
+                                definedReturnType = true;
+                            }
+                        }
                     } else {
-                        argumentList.add(pp);
+                        if (pp.isReservedToken() && pp.getToken().equals(Token.OPEN_BRACE)) {
+                            argumentList.add(pp);
+                        } else if (pp.isReservedToken() && pp.getToken().equals(Token.CLOSE_BRACE)) {
+                            argumentList.add(pp);
+                            arglistDone = true;
+                        } else {
+                            argumentList.add(pp);
+                        }
                     }
+
                 }
+                // if args list is done but there is no return type, we can flag this as an error.
+                // TODO
+
                 int block = 0;
 
                 if (pp.isReservedToken() && pp.getToken().equals(Token.OPEN_BLOCK)) {
@@ -143,23 +171,76 @@ public class Parser {
                         break;
                     }
                 } else {
+                    if( pp.isReservedKeyword() && pp.getKeyword().equals(Keyword.DECIMAL)){
+                        Variable v = new Variable();
+                        v.setType(PrimitiveType.DECIMAL);
+                        Particle pn = list.get(j+1);
+                        if( pn.isNamedItem() && !pn.isNamedFunction() ){
+                            v.setName(pn.getName());
+                            localVariables.add(v);
+                        }
+                    }
+                    if( pp.isReservedKeyword() && pp.getKeyword().equals(Keyword.STRING)){
+                        Variable v = new Variable();
+                        v.setType(PrimitiveType.STRING);
+                        Particle pn = list.get(j+1);
+                        if( pn.isNamedItem() && !pn.isNamedFunction() ){
+                            v.setName(pn.getName());
+                            localVariables.add(v);
+                        }
+                    }
+                    if( pp.isReservedKeyword() && pp.getKeyword().equals(Keyword.BOOLEAN)){
+                        Variable v = new Variable();
+                        v.setType(PrimitiveType.BOOLEAN);
+                        Particle pn = list.get(j+1);
+                        if( pn.isNamedItem() && !pn.isNamedFunction() ){
+                            v.setName(pn.getName());
+                            localVariables.add(v);
+                        }
+                    }
+                    if( pp.isReservedToken() && pp.getKeyword().equals(Keyword.OBJECT)){
+                        Variable v = new Variable();
+                        v.setType(PrimitiveType.OBJECT);
+                        Particle pn = list.get(j+1);
+                        if( pn.isNamedItem() && !pn.isNamedFunction() ){
+                            v.setName(pn.getName());
+                            localVariables.add(v);
+                        }
+
+                    }
+                    if( pp.isNamedItem() && classLookup.get(pp.getName()) != null ){
+                        Particle pn = list.get(j+1);
+                        if( pn.isNamedItem() ) {
+                            Variable v = new Variable();
+                            v.setType(PrimitiveType.OBJECT);
+                            v.setClazzType(pp.getName());
+                            v.setName(pn.getName());
+                            v.setValue("");
+                            localVariables.add(v);
+                        } else {
+                            // syntax error ?
+                        }
+                    }
+
                     bodyList.add(pp);
                 }
             } catch (Exception ex) {
-                System.out.println("Here:" + ex.getMessage());
+                //System.out.println("Here:" + ex.getMessage());
                 //ex.printStackTrace();
             }
         }
 
         String argumentListStr = "";
+
         for (int k = 0; k < argumentList.size(); k++) {
             argumentListStr += ((Particle) argumentList.get(k)).getRaw() + " ";
         }
-        String sig = argumentListStr.trim();
+        String sig = m.getReturnType().toString().toLowerCase() + " " + argumentListStr.trim();
         System.out.println("Adding signature for method:" + m.getName() + ":" + sig);
         m.setBody(bodyList);
         m.setArguments(argumentList);
         m.setSignature(sig);
+        m.setLocalVariables(localVariables);
         return m;
 
 
@@ -488,6 +569,7 @@ public class Parser {
         if (tok.equals("false")) {
             particle.setLiteralValue(true);
             particle.setBooleanValue(Boolean.FALSE);
+
             return particle;
         } else if (tok.equals("true")) {
             particle.setLiteralValue(true);

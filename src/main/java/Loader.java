@@ -71,6 +71,7 @@ public class Loader {
 
             System.out.println("Parse classes from file particle list");
             HashMap<String, Clazz> map = Parser.parseClasses(list);
+            Parser.classLookup = map;
             System.out.println("file particle list contained:" + map.size() + " classes");
 
             Set set = map.keySet();

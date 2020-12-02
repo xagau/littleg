@@ -31,6 +31,7 @@ public class Particle {
     private boolean literalValue = false;
     private boolean reservedToken = false;
     private boolean namedFunction = false;
+    private boolean variable = false;
 
     private String raw = "";
 
@@ -178,5 +179,13 @@ public class Particle {
 
     public void setNamedClass(boolean namedClass) {
         this.namedClass = namedClass;
+    }
+
+    public boolean isVariable() {
+        return variable;
+    }
+
+    public void setVariable(boolean variable) {
+        this.variable = variable;
     }
 }

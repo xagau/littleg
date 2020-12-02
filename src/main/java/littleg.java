@@ -68,6 +68,8 @@ public class littleg {
                 System.out.println(signature + " could not be found in " + target);
             }
 
+            m.invoke();
+
 
         } catch(Exception ex) {
             ex.printStackTrace();
