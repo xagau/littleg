@@ -171,58 +171,79 @@ public class Parser {
                         break;
                     }
                 } else {
-                    if( pp.isReservedKeyword() && pp.getKeyword().equals(Keyword.DECIMAL)){
-                        Variable v = new Variable();
-                        v.setType(PrimitiveType.DECIMAL);
-                        Particle pn = list.get(j+1);
-                        if( pn.isNamedItem() && !pn.isNamedFunction() ){
-                            v.setName(pn.getName());
-                            localVariables.add(v);
+                    try {
+                        if (pp.isReservedKeyword() && pp.getKeyword().equals(Keyword.DECIMAL)) {
+                            Variable v = new Variable();
+                            v.setType(PrimitiveType.DECIMAL);
+                            Particle pn = list.get(j + 1);
+                            if (pn.isNamedItem() && !pn.isNamedFunction()) {
+                                v.setName(pn.getName());
+                                localVariables.add(v);
+                            }
                         }
-                    }
-                    if( pp.isReservedKeyword() && pp.getKeyword().equals(Keyword.STRING)){
-                        Variable v = new Variable();
-                        v.setType(PrimitiveType.STRING);
-                        Particle pn = list.get(j+1);
-                        if( pn.isNamedItem() && !pn.isNamedFunction() ){
-                            v.setName(pn.getName());
-                            localVariables.add(v);
+                    } catch(Exception ex) { ex.printStackTrace();}
+
+                    try {
+                        if (pp.isReservedKeyword() && pp.getKeyword().equals(Keyword.STRING)) {
+                            Variable v = new Variable();
+                            v.setType(PrimitiveType.STRING);
+                            Particle pn = list.get(j + 1);
+                            if (pn.isNamedItem() && !pn.isNamedFunction()) {
+                                v.setName(pn.getName());
+                                localVariables.add(v);
+                            }
                         }
-                    }
-                    if( pp.isReservedKeyword() && pp.getKeyword().equals(Keyword.BOOLEAN)){
-                        Variable v = new Variable();
-                        v.setType(PrimitiveType.BOOLEAN);
-                        Particle pn = list.get(j+1);
-                        if( pn.isNamedItem() && !pn.isNamedFunction() ){
-                            v.setName(pn.getName());
-                            localVariables.add(v);
-                        }
-                    }
-                    if( pp.isReservedToken() && pp.getKeyword().equals(Keyword.OBJECT)){
-                        Variable v = new Variable();
-                        v.setType(PrimitiveType.OBJECT);
-                        Particle pn = list.get(j+1);
-                        if( pn.isNamedItem() && !pn.isNamedFunction() ){
-                            v.setName(pn.getName());
-                            localVariables.add(v);
+                    } catch(Exception ex) { ex.printStackTrace(); }
+
+                    try {
+                        if (pp.isReservedKeyword() && pp.getKeyword().equals(Keyword.BOOLEAN)) {
+                            Variable v = new Variable();
+                            v.setType(PrimitiveType.BOOLEAN);
+                            Particle pn = list.get(j + 1);
+                            if (pn.isNamedItem() && !pn.isNamedFunction()) {
+                                v.setName(pn.getName());
+                                localVariables.add(v);
+                            }
                         }
 
+                    } catch(Exception ex) {
+                        ex.printStackTrace();
                     }
-                    if( pp.isNamedItem() && classLookup.get(pp.getName()) != null ){
-                        Particle pn = list.get(j+1);
-                        if( pn.isNamedItem() ) {
+
+                    try {
+                        if (pp.isReservedKeyword() && pp.getKeyword().equals(Keyword.OBJECT)) {
                             Variable v = new Variable();
                             v.setType(PrimitiveType.OBJECT);
-                            v.setClazzType(pp.getName());
-                            v.setName(pn.getName());
-                            v.setValue("");
-                            localVariables.add(v);
-                        } else {
-                            // syntax error ?
+                            Particle pn = list.get(j + 1);
+                            if (pn.isNamedItem() && !pn.isNamedFunction()) {
+                                v.setName(pn.getName());
+                                localVariables.add(v);
+                            }
+
                         }
+                    } catch(Exception ex) {
+                        ex.printStackTrace();
                     }
+                    try {
+                        if (pp.isNamedItem() && classLookup.get(pp.getName()) != null) {
+                            Particle pn = list.get(j + 1);
+                            if (pn.isNamedItem()) {
+                                Variable v = new Variable();
+                                v.setType(PrimitiveType.OBJECT);
+                                v.setClazzType(pp.getName());
+                                v.setName(pn.getName());
+                                v.setValue("");
+                                localVariables.add(v);
+                            } else {
+                                // syntax error ?
+                            }
+                        }
+
+                    } catch(Exception ex){}
 
                     bodyList.add(pp);
+
+
                 }
             } catch (Exception ex) {
                 //System.out.println("Here:" + ex.getMessage());
@@ -295,7 +316,6 @@ public class Parser {
                             }
                         } catch (Exception ex) {
                         }
-                        //System.out.println("Adding subset particle " + particle + " to class " + name);
                         subset.add(particle);
                         if (started && block == 0) {
                             clazz.setName(name);
