@@ -4,17 +4,19 @@ import java.util.HashMap;
 
 public class Evaluator {
 
-    public static Variable evaluate(Variable lo, Token op, Variable ro) throws UnexpectedParticleException
-    {
+    public static Variable evaluate(Variable lo, Token op, Variable ro) throws UnexpectedParticleException, ExpressionCannotBeEvaluatedException {
+        if( lo == null || op == null || ro == null ){
+            throw new ExpressionCannotBeEvaluatedException("variables or operands are null");
+        }
         Variable v = new Variable();
         Token tok = op;
         switch(tok){
             case GT:
                 if( !lo.getType().equals(PrimitiveType.DECIMAL) ){
-                    throw new UnexpectedParticleException("> not applicable to type " + lo.getType());
+                    throw new UnexpectedParticleException(" > not applicable to type " + lo.getType());
                 }
                 else if( !ro.getType().equals(PrimitiveType.DECIMAL) ){
-                    throw new UnexpectedParticleException("> not applicable to type " + ro.getType());
+                    throw new UnexpectedParticleException(" > not applicable to type " + ro.getType());
                 }
                 if( new BigDecimal(lo.getValue()).max(new BigDecimal(ro.getValue())).equals(new BigDecimal(lo.getValue())))  {
                     v.setType(PrimitiveType.BOOLEAN);
@@ -42,8 +44,26 @@ public class Evaluator {
                     return v;
                 }
             case LOGICAL_AND:
+                if( !ro.getType().equals(PrimitiveType.BOOLEAN) ){
+                    throw new UnexpectedParticleException("&& only applicable to type boolean");
+                }
+                if( !lo.getType().equals(PrimitiveType.BOOLEAN) ){
+                    throw new UnexpectedParticleException("&& only applicable to type boolean");
+                }
+                v.setType(PrimitiveType.BOOLEAN);
+                v.bool = (lo.bool && ro.bool);
+
                 break;
             case LOGICAL_OR:
+                if( !ro.getType().equals(PrimitiveType.BOOLEAN) ){
+                    throw new UnexpectedParticleException("|| only applicable to type boolean");
+                }
+                if( !lo.getType().equals(PrimitiveType.BOOLEAN) ){
+                    throw new UnexpectedParticleException("|| only applicable to type boolean");
+                }
+                v.setType(PrimitiveType.BOOLEAN);
+                v.bool = (lo.bool || ro.bool);
+
                 break;
             case AND:
                 break;
@@ -167,150 +187,127 @@ public class Evaluator {
         return v;
     }
 
-    public static Variable evaluate(ArrayList<Particle> list, HashMap<String, Variable> varList, HashMap<String, Clazz> clazzList) throws UnexpectedParticleException {
+    public static boolean isComparisionOperand(Token tok)
+    {
+        switch(tok){
+            case GT:
+                return true;
+            case LT:
+                return true;
+            case LOGICAL_AND:
+                return true;
+            case LOGICAL_OR:
+                return true;
+            case AND:
+                return true;
+            case OR:
+                return true;
+            case GTE:
+                return true;
+            case LTE:
+                return true;
+            case PLUS:
+                return true;
+            case MINUS:
+                return true;
+            case MULTIPLY:
+                return true;
+            case DIVIDE:
+                return true;
+            case EQUAL:
+                return true;
+            case NOT_EQUAL:
+                return true;
+            case ASSIGNMENT:
+                return true;
+            case INCREMENT:
+                return true;
+            case DECREMENT:
+                return true;
+        }
+        return false;
+    }
 
+    public static Variable evaluate(ArrayList<Particle> list, HashMap<String, Variable> varList, HashMap<String, Clazz> clazzList) throws UnexpectedParticleException, ExpressionCannotBeEvaluatedException {
 
-        Variable ro = new Variable();
-        Variable lo = new Variable();
+        Variable lo = null;
+        Variable ro = null;
 
-        Token comparisonOperand = null;
+        Token operand = null;
 
-        boolean hasReachedComparisonOperand = false;
-        boolean hasReachedRightOperand = false;
-        boolean hasReachedLeftOperand = false;
 
         for(int i = 0; i < list.size(); i++ ){
             Particle p = list.get(i);
 
-            if( !hasReachedComparisonOperand ) {
+            if( operand == null ) {
                 if (p.isNamedItem()) {
                     lo = (Variable) varList.get(p.getName());
-                    hasReachedLeftOperand = true;
                 } else if ( p.isLiteralValue() ){
                     //System.out.println("Reached literal check");
                     PrimitiveType type = p.getType();
                     if( type.equals(PrimitiveType.DECIMAL)) {
+                        lo = new Variable();
                         lo.setType(type);
                         lo.decimal = p.getDecimalValue();
                         System.out.println("lo: decimal:" + lo.decimal);
                     }
                     else if( type.equals(PrimitiveType.STRING)) {
+                        lo = new Variable();
                         lo.setType(type);
                         lo.string = p.getStringValue();
                     }
                     else if( type.equals(PrimitiveType.BOOLEAN)) {
+                        lo = new Variable();
                         lo.setType(type);
                         lo.bool = p.getBooleanValue();
+                        System.out.println("lo:" + lo.bool);
                     }
                     else if( type.equals(PrimitiveType.OBJECT)) {
+                        lo = new Variable();
                         lo.setType(type);
                         lo.object = p.getObjectValue();
                     }
-                    hasReachedLeftOperand = true;
                 }
             }
             if (p.isReservedToken() ) {
-
-                if( hasReachedLeftOperand == false ){
+                if( lo == null ){
                     throw new UnexpectedParticleException("Unexpected operator / token @ " + i);
                 }
                 Token tok = p.getToken();
-                switch(tok){
-                    case GT:
-                        comparisonOperand = tok;
-                        hasReachedComparisonOperand = true;
-                        break;
-                    case LT:
-                        comparisonOperand = tok;
-                        hasReachedComparisonOperand = true;
-                        break;
-                    case LOGICAL_AND:
-                        comparisonOperand = tok;
-                        hasReachedComparisonOperand = true;
-                        break;
-                    case LOGICAL_OR:
-                        comparisonOperand = tok;
-                        hasReachedComparisonOperand = true;
-                        break;
-                    case AND:
-                        comparisonOperand = tok;
-                        hasReachedComparisonOperand = true;
-                        break;
-                    case OR:
-                        comparisonOperand = tok;
-                        hasReachedComparisonOperand = true;
-                        break;
-                    case GTE:
-                        comparisonOperand = tok;
-                        hasReachedComparisonOperand = true;
-                        break;
-                    case LTE:
-                        comparisonOperand = tok;
-                        hasReachedComparisonOperand = true;
-                        break;
-                    case PLUS:
-                        comparisonOperand = tok;
-                        hasReachedComparisonOperand = true;
-                        break;
-                    case MINUS:
-                        comparisonOperand = tok;
-                        hasReachedComparisonOperand = true;
-                        break;
-                    case MULTIPLY:
-                        comparisonOperand = tok;
-                        hasReachedComparisonOperand = true;
-                        break;
-                    case DIVIDE:
-                        comparisonOperand = tok;
-                        hasReachedComparisonOperand = true;
-                        break;
-                    case EQUAL:
-                        comparisonOperand = tok;
-                        hasReachedComparisonOperand = true;
-                        break;
-                    case NOT_EQUAL:
-                        comparisonOperand = tok;
-                        hasReachedComparisonOperand = true;
-                        break;
-                    case ASSIGNMENT:
-                        comparisonOperand = tok;
-                        hasReachedComparisonOperand = true;
-                        break;
-                    case INCREMENT:
-                        comparisonOperand = tok;
-                        hasReachedComparisonOperand = true;
-                        break;
-                    case DECREMENT:
-                        comparisonOperand = tok;
-                        hasReachedComparisonOperand = true;
-                        break;
+                boolean f = isComparisionOperand(tok);
+                if( f ){
+                    operand = tok;
                 }
             }
 
 
-            if( hasReachedLeftOperand && hasReachedComparisonOperand && hasReachedRightOperand == false ) {
+            if( lo != null && operand != null && ro == null ) {
                 if( p.isNamedItem() ){
                     ro = varList.get(p.getName());
                 } else if ( p.isLiteralValue() ){
                     PrimitiveType type = p.getType();
                     if( type.equals(PrimitiveType.DECIMAL)) {
+                        ro = new Variable();
                         ro.setType(type);
                         ro.decimal = p.getDecimalValue();
                         System.out.println("ro: decimal:" + ro.decimal);
                     }
                     else if( type.equals(PrimitiveType.STRING)) {
+                        ro = new Variable();
                         ro.setType(type);
                         ro.string = p.getStringValue();
                     }
                     else if( type.equals(PrimitiveType.BOOLEAN)) {
+                        ro = new Variable();
                         ro.setType(type);
                         ro.bool = p.getBooleanValue();
+                        System.out.println("ro:" + ro.bool);
                     }
                     else if( type.equals(PrimitiveType.OBJECT)) {
+                        ro = new Variable();
                         ro.setType(type);
                         ro.object = p.getObjectValue();
                     }
-                    hasReachedRightOperand = true;
                 }
 
             }
@@ -332,10 +329,10 @@ public class Evaluator {
             }
             */
 
-            if( hasReachedRightOperand && hasReachedLeftOperand && hasReachedComparisonOperand ){
-                System.out.println("eval(" + lo + " " + comparisonOperand + " " + ro + ")");
-                Variable ret = evaluate(lo, comparisonOperand, ro);
-                System.out.println(ret.getValue());
+            if( lo != null && operand != null && ro != null ){
+                System.out.println("eval(" + lo + " " + operand + " " + ro + ")");
+                Variable ret = evaluate(lo, operand, ro);
+                System.out.println("eval result:" + ret.getValue());
                 return ret;
             }
         }
@@ -794,10 +791,14 @@ public class Evaluator {
         Variable v = new Variable();
         try {
             v = evaluate(expression, varList, clazzList);
-            if( v.decimal.equals(new BigDecimal("25"))) {
-                return true;
+            if( v != null ) {
+                if (v.decimal.equals(new BigDecimal("25"))) {
+                    return true;
+                } else {
+                    return false;
+                }
             } else {
-                return false;
+                System.out.println("v is null");
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -837,13 +838,14 @@ public class Evaluator {
         Variable v = new Variable();
         try {
             v = evaluate(expression, varList, clazzList);
-            if( v == null ){
-                System.out.println("Value is null");
-                return false;
-            }
-            if( v.decimal.equals(new BigDecimal("5"))) {
-                return true;
+            if( v != null ) {
+                if (v.decimal.equals(new BigDecimal("5"))) {
+                    return true;
+                } else {
+                    return false;
+                }
             } else {
+                System.out.println("v is null");
                 return false;
             }
         } catch (Exception ex) {
@@ -885,6 +887,240 @@ public class Evaluator {
 
     }
 
+    public static boolean testBooleanLogicalOr() {
+        ArrayList<Particle> expression = new ArrayList<Particle>();
+        HashMap<String, Variable> varList = new HashMap<String, Variable>();
+        HashMap<String, Clazz> clazzList = new HashMap<String, Clazz>();
+
+        Variable d = new Variable();
+        d.setType(PrimitiveType.BOOLEAN);
+        d.setValue("false");
+        d.setName("d");
+        varList.put("d", d);
+
+        try {
+            expression.add(Parser.parseToParticle("d"));
+            expression.add(Parser.parseToParticle("||"));
+            Particle p = Parser.parseToParticle("true");
+            expression.add(p);
+            expression.add(Parser.parseToParticle(";"));
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        Variable trueOrFalse = new Variable();
+        try {
+            trueOrFalse = evaluate(expression, varList, clazzList);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return trueOrFalse.bool;
+
+    }
+
+    public static boolean testBooleanLogicalOrLiteral() {
+        ArrayList<Particle> expression = new ArrayList<Particle>();
+        HashMap<String, Variable> varList = new HashMap<String, Variable>();
+        HashMap<String, Clazz> clazzList = new HashMap<String, Clazz>();
+
+        Variable d = new Variable();
+        d.setType(PrimitiveType.BOOLEAN);
+        d.setValue("false");
+        d.setName("d");
+        varList.put("d", d);
+
+        try {
+            expression.add(Parser.parseToParticle("false"));
+            expression.add(Parser.parseToParticle("||"));
+            Particle p = Parser.parseToParticle("true");
+            expression.add(p);
+            expression.add(Parser.parseToParticle(";"));
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        Variable trueOrFalse = new Variable();
+        try {
+            trueOrFalse = evaluate(expression, varList, clazzList);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return trueOrFalse.bool;
+
+    }
+
+    public static boolean testBooleanLogicalAndLiteral() {
+        ArrayList<Particle> expression = new ArrayList<Particle>();
+        HashMap<String, Variable> varList = new HashMap<String, Variable>();
+        HashMap<String, Clazz> clazzList = new HashMap<String, Clazz>();
+
+        Variable d = new Variable();
+        d.setType(PrimitiveType.BOOLEAN);
+        d.setValue("false");
+        d.setName("d");
+        varList.put("d", d);
+
+        try {
+            expression.add(Parser.parseToParticle("true"));
+            expression.add(Parser.parseToParticle("&&"));
+            Particle p = Parser.parseToParticle("true");
+            expression.add(p);
+            expression.add(Parser.parseToParticle(";"));
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        Variable trueOrFalse = new Variable();
+        try {
+            trueOrFalse = evaluate(expression, varList, clazzList);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return trueOrFalse.bool;
+
+    }
+
+    public static boolean testBooleanLogicalOrNot() {
+        ArrayList<Particle> expression = new ArrayList<Particle>();
+        HashMap<String, Variable> varList = new HashMap<String, Variable>();
+        HashMap<String, Clazz> clazzList = new HashMap<String, Clazz>();
+
+        Variable d = new Variable();
+        d.setType(PrimitiveType.BOOLEAN);
+        d.setValue("false");
+        d.setName("d");
+        varList.put("d", d);
+
+        try {
+            expression.add(Parser.parseToParticle("d"));
+            expression.add(Parser.parseToParticle("||"));
+            Particle p = Parser.parseToParticle("false");
+            expression.add(p);
+            expression.add(Parser.parseToParticle(";"));
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        Variable trueOrFalse = new Variable();
+        try {
+            trueOrFalse = evaluate(expression, varList, clazzList);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return !trueOrFalse.bool;
+
+    }
+
+    public static boolean testBooleanLogicalAndNot() {
+        ArrayList<Particle> expression = new ArrayList<Particle>();
+        HashMap<String, Variable> varList = new HashMap<String, Variable>();
+        HashMap<String, Clazz> clazzList = new HashMap<String, Clazz>();
+
+        Variable d = new Variable();
+        d.setType(PrimitiveType.BOOLEAN);
+        d.setValue("false");
+        d.setName("d");
+        varList.put("d", d);
+
+        try {
+            expression.add(Parser.parseToParticle("d"));
+            expression.add(Parser.parseToParticle("&&"));
+            Particle p = Parser.parseToParticle("false");
+            expression.add(p);
+            expression.add(Parser.parseToParticle(";"));
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        Variable trueOrFalse = new Variable();
+        try {
+            trueOrFalse = evaluate(expression, varList, clazzList);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return !trueOrFalse.bool;
+    }
+
+    public static boolean testBooleanLogicalAnd() {
+
+        ArrayList<Particle> expression = new ArrayList<Particle>();
+        HashMap<String, Variable> varList = new HashMap<String, Variable>();
+        HashMap<String, Clazz> clazzList = new HashMap<String, Clazz>();
+
+        Variable d = new Variable();
+        d.setType(PrimitiveType.BOOLEAN);
+        d.setValue("true");
+        d.setName("d");
+        Variable s = new Variable();
+        s.setType(PrimitiveType.BOOLEAN);
+        s.setValue("true");
+        s.setName("s");
+        varList.put("d", d);
+        varList.put("s", s);
+
+        try {
+            expression.add(Parser.parseToParticle("d"));
+            expression.add(Parser.parseToParticle("&&"));
+            Particle p = Parser.parseToParticle("s");
+            expression.add(p);
+            expression.add(Parser.parseToParticle(";"));
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        Variable trueOrFalse = new Variable();
+        try {
+            trueOrFalse = evaluate(expression, varList, clazzList);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return !trueOrFalse.bool;
+
+    }
+
+    public static boolean testBooleanTrueAndFalse() {
+
+        ArrayList<Particle> expression = new ArrayList<Particle>();
+        HashMap<String, Variable> varList = new HashMap<String, Variable>();
+        HashMap<String, Clazz> clazzList = new HashMap<String, Clazz>();
+
+        Variable d = new Variable();
+        d.setType(PrimitiveType.BOOLEAN);
+        d.setValue("true");
+        d.setName("d");
+        Variable s = new Variable();
+        s.setType(PrimitiveType.BOOLEAN);
+        s.setValue("false");
+        s.setName("s");
+        varList.put("d", d);
+        varList.put("s", s);
+
+        try {
+            expression.add(Parser.parseToParticle("d"));
+            expression.add(Parser.parseToParticle("&&"));
+            Particle p = Parser.parseToParticle("s");
+            expression.add(p);
+            expression.add(Parser.parseToParticle(";"));
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        Variable trueOrFalse = new Variable();
+        try {
+            trueOrFalse = evaluate(expression, varList, clazzList);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return !trueOrFalse.bool;
+
+    }
 
     public static void main(String[] args)
     {
@@ -926,6 +1162,28 @@ public class Evaluator {
 
         boolean t14 = testDecimal5X5S();
         System.out.println("testDecimal5X5S:" + ((t14)?"passed":"failed"));
+
+        boolean t15 = testBooleanLogicalOr();
+        System.out.println(" testBooleanLogicalOr:" + ((t15)?"passed":"failed"));
+
+        boolean t16 = testBooleanLogicalAnd();
+        System.out.println(" testBooleanLogicalAnd:" + ((t16)?"passed":"failed"));
+
+        boolean t16b = testBooleanLogicalAndLiteral();
+        System.out.println(" testBooleanLogicalAndLiteral:" + ((t16b)?"passed":"failed"));
+
+
+        boolean t17 = testBooleanLogicalOrNot();
+        System.out.println(" testBooleanLogicalOrNot:" + ((t17)?"passed":"failed"));
+
+        boolean t18 = testBooleanLogicalAndNot();
+        System.out.println(" testBooleanLogicalAndNot:" + ((t18)?"passed":"failed"));
+
+        boolean t19 = testBooleanLogicalOrLiteral();
+        System.out.println(" testBooleanLogicalOrLiteral:" + ((t19)?"passed":"failed"));
+
+        boolean t20 = testBooleanTrueAndFalse();
+        System.out.println(" testBooleanLogicalOrLiteral:" + ((t20)?"passed":"failed"));
 
     }
 

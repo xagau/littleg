@@ -30,6 +30,8 @@ public class Variable {
     private VisibilityModifier visibility = VisibilityModifier.PRIVATE;
     private PrimitiveType type = PrimitiveType.UNDEFINED;
 
+    private boolean literalValue = false;
+
     BigDecimal decimal = new BigDecimal(0);
     Boolean bool = false;
     String string = "";
@@ -42,7 +44,6 @@ public class Variable {
             case DECIMAL: {
                 decimal = new BigDecimal(val);
                 break;
-
             }
             case STRING: {
                 string = val;
@@ -51,7 +52,6 @@ public class Variable {
             case OBJECT: {
                 object = "{}";
                 break;
-
             }
             case BOOLEAN: {
                 bool = (Boolean.parseBoolean(val));
@@ -117,5 +117,13 @@ public class Variable {
 
     public void setClazzType(String clazzType) {
         this.clazzType = clazzType;
+    }
+
+    public boolean isLiteralValue() {
+        return literalValue;
+    }
+
+    public void setLiteralValue(boolean literalValue) {
+        this.literalValue = literalValue;
     }
 }
