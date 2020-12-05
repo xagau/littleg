@@ -32,6 +32,7 @@ public class Particle {
     private boolean reservedToken = false;
     private boolean namedFunction = false;
     private boolean variable = false;
+    private PrimitiveType type = PrimitiveType.UNDEFINED;
 
     private String raw = "";
 
@@ -41,6 +42,7 @@ public class Particle {
     private String stringValue = null;
     private BigDecimal decimalValue = null;
     private Boolean booleanValue = null;
+    private String objectValue = null;
 
     public Particle(String raw){
         this.setRaw(raw);
@@ -187,5 +189,22 @@ public class Particle {
 
     public void setVariable(boolean variable) {
         this.variable = variable;
+    }
+
+    public PrimitiveType getType() {
+
+        return type;
+    }
+
+    public void setType(PrimitiveType type) {
+        this.type = type;
+    }
+
+    public String getObjectValue() {
+        return objectValue;
+    }
+
+    public void setObjectValue(String objectValue) {
+        this.objectValue = objectValue;
     }
 }

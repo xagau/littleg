@@ -52,12 +52,22 @@ public class Method {
             System.out.println("Local Variables:" + (Variable)localVariables.get(i));
         }
 
-        for(int i = 0; i < body.size(); i++){
-            System.out.println("Body Particles:" + (Particle)body.get(i));
+        Variable returnVariable = new Variable();
+        returnVariable.setType(getReturnType());
+        returnVariable.setValue("");
+
+        // evaluate statement
+        for(int ptr = 0; ptr < body.size(); ptr++){
+
+            Particle p = body.get( ptr);
+            System.out.println(name + ":" + ptr + ":" + p);
+
         }
 
-        return null;
+        return returnVariable;
     }
+
+
     public Variable invoke()
     {
 

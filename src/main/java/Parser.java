@@ -50,35 +50,35 @@ public class Parser {
             for (; index < list.size(); index++) {
                 Particle p = list.get(index);
                 Particle pp = list.get(index+1);
-                System.out.println(p);
+                //.println(p);
                 if (p.isReservedKeyword() && pp.isNamedFunction()) {
-                    System.out.println("Got lead:" + pp.getName());
+                    //System.out.println("Got lead:" + pp.getName());
                     //System.in.read();
                     Method m = new Method();
                     m.setName(pp.getName());
                     if (p.getKeyword().equals(Keyword.DECIMAL)) {
-                        System.out.println("Found Method:" + m.getName());
+                        //.println("Found Method:" + m.getName());
                         m.setReturnType(PrimitiveType.DECIMAL);
                         m = parseMethod(m, list, clazz);
                         clazz.addMethod(m);
                         methodSet.put(m.getSignature(), m);
 
                     } else if (p.getKeyword().equals(Keyword.BOOLEAN)) {
-                        System.out.println("Found Method:" + m.getName());
+                        //System.out.println("Found Method:" + m.getName());
                         m.setReturnType(PrimitiveType.BOOLEAN);
                         m = parseMethod(m, list, clazz);
                         clazz.addMethod(m);
                         methodSet.put(m.getSignature(), m);
 
                     } else if (p.getKeyword().equals(Keyword.VOID)) {
-                        System.out.println("Found Method:" + m.getName());
+                        //System.out.println("Found Method:" + m.getName());
                         m.setReturnType(PrimitiveType.VOID);
                         m = parseMethod(m, list, clazz);
                         clazz.addMethod(m);
                         methodSet.put(m.getSignature(), m);
 
                     } else if (p.getKeyword().equals(Keyword.STRING)) {
-                        System.out.println("Found Method:" + m.getName());
+                        //System.out.println("Found Method:" + m.getName());
                         m.setReturnType(PrimitiveType.STRING);
                         m = parseMethod(m, list, clazz);
                         clazz.addMethod(m);
@@ -86,7 +86,7 @@ public class Parser {
 
 
                     } else if (p.getKeyword().equals(Keyword.OBJECT)) {
-                        System.out.println("Found Method:" + m.getName());
+                        //System.out.println("Found Method:" + m.getName());
                         m.setReturnType(PrimitiveType.OBJECT);
                         m = parseMethod(m, list, clazz);
                         clazz.addMethod(m);
@@ -106,9 +106,27 @@ public class Parser {
         return methodSet;
     }
 
+    public static void printNormalizedList(ArrayList<Particle> list)
+    {
+        for(int i = 0; i < list.size(); i++){
+            Particle p = list.get(i);
+            try {
+                boolean interactive = false;
+                //if (Globals.verbose) {
+                    System.out.println("Parser::" + i + ":" + p );
+                //}
+                if (interactive) {
+                    System.in.read();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public static Method parseMethod(Method m, ArrayList<Particle> list, Clazz clazz)
     {
-
+        Parser.printNormalizedList(list);
         System.out.println("Parse Method:" + m.getName() + " of " + clazz.getName());
 
         boolean arglistDone = false;
@@ -121,7 +139,6 @@ public class Parser {
             try {
                 Particle pp = list.get(j);
 
-                //System.out.println("AMP:" + pp + " for " + m.getName() + "@" + j);
                 if (!arglistDone) {
                     if( definedReturnType == false ) {
                         if (pp.isReservedKeyword() && definedReturnType == false) {
@@ -170,6 +187,8 @@ public class Parser {
                         index = j;
                         break;
                     }
+                } else if( pp.isReservedToken() && pp.getToken().equals(Token.END_STATEMENT) ) {
+                    bodyList.add(pp);
                 } else {
                     try {
                         if (pp.isReservedKeyword() && pp.getKeyword().equals(Keyword.DECIMAL)) {
@@ -239,15 +258,16 @@ public class Parser {
                             }
                         }
 
-                    } catch(Exception ex){}
+                    } catch(Exception ex){
+                        ex.printStackTrace();
+
+                    }
 
                     bodyList.add(pp);
 
-
                 }
             } catch (Exception ex) {
-                //System.out.println("Here:" + ex.getMessage());
-                //ex.printStackTrace();
+                ex.printStackTrace();
             }
         }
 
@@ -315,13 +335,14 @@ public class Parser {
                                 block--;
                             }
                         } catch (Exception ex) {
+
                         }
                         subset.add(particle);
                         if (started && block == 0) {
                             clazz.setName(name);
                             clazz.setBodySet(subset);
                             map.put(name, clazz);
-                            i = j++;
+                            i = (j++);
                             break;
                         }
                     }
@@ -345,16 +366,21 @@ public class Parser {
                     }
                 }
             }
+
+            String discardTok = "";
             if (isNumeric(tok)) {
                 while (tokenizer.hasMoreTokens()) {
                     String nxt = tokenizer.nextToken();
                     if (nxt.equals(";")) {
+                        discardTok = ";";
                         break;
                     }
                     if (nxt.equals(")")) {
+                        discardTok = ")";
                         break;
                     }
                     if (nxt.equals(",")) {
+                        discardTok = ",";
                         break;
                     }
                     tok += nxt;
@@ -365,6 +391,10 @@ public class Parser {
             if (!tok.equals(" ")) { // speed up
                 Particle p = parseToParticle(tok);
                 programSet.add(p);
+                if( !discardTok.equals("")){
+                    Particle pp = parseToParticle(discardTok);
+                    programSet.add(pp);
+                }
                 try {
                     boolean interactive = false;
                     boolean verbose = false;
@@ -525,34 +555,43 @@ public class Parser {
                 } else if (p.isNamedItem()) {
                     try {
                         Particle pp = list.get(i + 1);
-                        if (pp.getToken().equals(Token.OPEN_BRACE)) {
-                            Particle fp = new Particle(p.getRaw());
-                            fp.setNamedItem(false);
-                            fp.setNamedFunction(true);
-                            fp.setName(p.getName());
-                            newList.add(fp);
-                        } else  if (pp.getToken().equals(Token.OPEN_BLOCK)) {
-                            try {
-                                Particle prevp = list.get(i - 1);
-                                if (prevp.isReservedKeyword() && prevp.getKeyword().equals(Keyword.CLASS)) {
+                        if( pp.isReservedToken()) {
+                            if (pp.getToken().equals(Token.OPEN_BRACE)) {
+                                try {
                                     Particle fp = new Particle(p.getRaw());
-                                    fp.setNamedItem(true);
-                                    fp.setNamedFunction(false);
-                                    fp.setNamedClass(true);
+                                    fp.setNamedItem(false);
+                                    fp.setNamedFunction(true);
                                     fp.setName(p.getName());
                                     newList.add(fp);
+                                } catch (Exception ex) {
                                 }
-                            } catch(Exception ex) {
+                            } else if (pp.getToken().equals(Token.OPEN_BLOCK)) {
+                                try {
+                                    Particle prevp = list.get(i - 1);
+                                    if (prevp.isReservedKeyword() && prevp.getKeyword().equals(Keyword.CLASS)) {
+                                        Particle fp = new Particle(p.getRaw());
+                                        fp.setNamedItem(true);
+                                        fp.setNamedFunction(false);
+                                        fp.setNamedClass(true);
+                                        fp.setName(p.getName());
+                                        newList.add(fp);
+                                    }
+                                } catch (Exception ex) {
+                                }
+                            } else {
                                 newList.add(p);
                             }
-                        }else {
+                        } else {
                             newList.add(p);
                         }
                     } catch (Exception ex) {
                         newList.add(p);
                     }
 
+                } else {
+                    newList.add(p);
                 }
+
             } catch(Exception ex) {
                 newList.add(p);
             }
@@ -567,6 +606,8 @@ public class Parser {
         try {
             BigDecimal bd = new BigDecimal(strNum);
         } catch (NumberFormatException nfe) {
+            //System.out.println("nfe:" + strNum);
+            //nfe.printStackTrace();
             return false;
         }
         return true;
@@ -587,19 +628,23 @@ public class Parser {
             return particle;
         }
         if (tok.equals("false")) {
+            particle.setType(PrimitiveType.BOOLEAN);
             particle.setLiteralValue(true);
             particle.setBooleanValue(Boolean.FALSE);
 
             return particle;
         } else if (tok.equals("true")) {
+            particle.setType(PrimitiveType.BOOLEAN);
             particle.setLiteralValue(true);
             particle.setBooleanValue(Boolean.TRUE);
             return particle;
         } else if (tok.startsWith("\"") && tok.endsWith("\"")) {
+            particle.setType(PrimitiveType.STRING);
             particle.setLiteralValue(true);
             particle.setStringValue(tok);
             return particle;
         } else if (isNumeric(tok)) {
+            particle.setType(PrimitiveType.DECIMAL);
             particle.setDecimalValue(new BigDecimal(tok));
             particle.setLiteralValue(true);
             return particle;
