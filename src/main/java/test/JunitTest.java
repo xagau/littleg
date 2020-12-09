@@ -1,4 +1,4 @@
-package src.main.test
+package test;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -11,7 +11,4 @@ import org.junit.runners.Suite;
 
 public class JunitTest {
         // This class remains empty, it is used only as a holder for the above annotations
-}
-
-class JunitTest {
 }

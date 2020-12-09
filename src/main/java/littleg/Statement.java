@@ -1,3 +1,7 @@
+package littleg;
+
+import littleg.Particle;
+
 import java.util.ArrayList;
 
 /** Copyright (c) 2020 Sean Beecroft,

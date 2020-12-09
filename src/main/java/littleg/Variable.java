@@ -1,3 +1,5 @@
+package littleg;
+
 /** Copyright (c) 2020 Sean Beecroft,
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -32,29 +34,29 @@ public class Variable {
 
     private boolean literalValue = false;
 
-    BigDecimal decimal = new BigDecimal(0);
-    Boolean bool = false;
-    String string = "";
-    Object object = null;
-    Void nothing = null;
+    private BigDecimal decimal = new BigDecimal(0);
+    private Boolean bool = false;
+    private String string = "";
+    private Object object = null;
+    private Void nothing = null;
 
     public void setValue(String val)
     {
         switch(getType()){
             case DECIMAL: {
-                decimal = new BigDecimal(val);
+                setDecimal(new BigDecimal(val));
                 break;
             }
             case STRING: {
-                string = val;
+                setString(val);
                 break;
             }
             case OBJECT: {
-                object = "{}";
+                setObject("{}");
                 break;
             }
             case BOOLEAN: {
-                bool = (Boolean.parseBoolean(val));
+                setBool((Boolean.parseBoolean(val)));
                 break;
             }
         }
@@ -65,16 +67,16 @@ public class Variable {
     {
         switch(getType()){
             case DECIMAL: {
-                return decimal.toString();
+                return getDecimal().toString();
             }
             case STRING: {
-                return string;
+                return getString();
             }
             case OBJECT: {
-                return object.toString();
+                return getObject().toString();
             }
             case BOOLEAN: {
-                return bool.toString();
+                return getBool().toString();
             }
         }
         return null;
@@ -125,5 +127,45 @@ public class Variable {
 
     public void setLiteralValue(boolean literalValue) {
         this.literalValue = literalValue;
+    }
+
+    public BigDecimal getDecimal() {
+        return decimal;
+    }
+
+    public void setDecimal(BigDecimal decimal) {
+        this.decimal = decimal;
+    }
+
+    public Boolean getBool() {
+        return bool;
+    }
+
+    public void setBool(Boolean bool) {
+        this.bool = bool;
+    }
+
+    public String getString() {
+        return string;
+    }
+
+    public void setString(String string) {
+        this.string = string;
+    }
+
+    public Object getObject() {
+        return object;
+    }
+
+    public void setObject(Object object) {
+        this.object = object;
+    }
+
+    public Void getNothing() {
+        return nothing;
+    }
+
+    public void setNothing(Void nothing) {
+        this.nothing = nothing;
     }
 }

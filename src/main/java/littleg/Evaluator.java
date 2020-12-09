@@ -1,3 +1,5 @@
+package littleg;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,7 +53,7 @@ public class Evaluator {
                     throw new UnexpectedTokenException("&& only applicable to type boolean");
                 }
                 v.setType(PrimitiveType.BOOLEAN);
-                v.bool = (lo.bool && ro.bool);
+                v.setBool((lo.getBool() && ro.getBool()));
 
                 break;
             case LOGICAL_OR:
@@ -62,7 +64,7 @@ public class Evaluator {
                     throw new UnexpectedTokenException("|| only applicable to type boolean");
                 }
                 v.setType(PrimitiveType.BOOLEAN);
-                v.bool = (lo.bool || ro.bool);
+                v.setBool((lo.getBool() || ro.getBool()));
 
                 break;
             case AND:
@@ -82,10 +84,10 @@ public class Evaluator {
             case PLUS:
                 if( lo.getType().equals(PrimitiveType.DECIMAL) ){
                     if( lo.getType().equals(PrimitiveType.DECIMAL)){
-                        BigDecimal nv = lo.decimal.add(ro.decimal);
+                        BigDecimal nv = lo.getDecimal().add(ro.getDecimal());
                         v.setName("result");
                         v.setType(PrimitiveType.DECIMAL);
-                        v.decimal = nv;
+                        v.setDecimal(nv);
                         return v;
                     }
                 }
@@ -94,10 +96,10 @@ public class Evaluator {
             case MINUS:
                 if( lo.getType().equals(PrimitiveType.DECIMAL) ){
                     if( lo.getType().equals(PrimitiveType.DECIMAL)){
-                        BigDecimal nv = lo.decimal.subtract(ro.decimal);
+                        BigDecimal nv = lo.getDecimal().subtract(ro.getDecimal());
                         v.setName("result");
                         v.setType(PrimitiveType.DECIMAL);
-                        v.decimal = nv;
+                        v.setDecimal(nv);
                         return v;
                     }
                 }
@@ -105,10 +107,10 @@ public class Evaluator {
             case MULTIPLY:
                 if( lo.getType().equals(PrimitiveType.DECIMAL) ){
                     if( ro.getType().equals(PrimitiveType.DECIMAL)){
-                        BigDecimal nv = lo.decimal.multiply(ro.decimal);
+                        BigDecimal nv = lo.getDecimal().multiply(ro.getDecimal());
                         v.setName("result");
                         v.setType(PrimitiveType.DECIMAL);
-                        v.decimal = nv;
+                        v.setDecimal(nv);
                         return v;
                     }
                 }
@@ -116,10 +118,10 @@ public class Evaluator {
             case DIVIDE:
                 if( lo.getType().equals(PrimitiveType.DECIMAL) ){
                     if( ro.getType().equals(PrimitiveType.DECIMAL)){
-                        BigDecimal nv = lo.decimal.divide(ro.decimal);
+                        BigDecimal nv = lo.getDecimal().divide(ro.getDecimal());
                         v.setName("result");
                         v.setType(PrimitiveType.DECIMAL);
-                        v.decimal = nv;
+                        v.setDecimal(nv);
                         return v;
                     }
                 }
@@ -181,13 +183,13 @@ public class Evaluator {
                 if( lo.getType().equals(PrimitiveType.DECIMAL )){
                     v.setName("result");
                     v.setType(PrimitiveType.DECIMAL);
-                    v.decimal = ro.decimal;
+                    v.setDecimal(ro.getDecimal());
                     return v;
                 }
                 else if( lo.getType().equals(PrimitiveType.BOOLEAN )){
                     v.setName("result");
                     v.setType(PrimitiveType.BOOLEAN);
-                    v.setValue(ro.bool.toString());
+                    v.setValue(ro.getBool().toString());
                     return v;
                 }
                 else if( lo.getType().equals(PrimitiveType.STRING )){
@@ -199,7 +201,7 @@ public class Evaluator {
                 else if( lo.getType().equals(PrimitiveType.OBJECT )){
                     v.setName("result");
                     v.setType(PrimitiveType.OBJECT);
-                    v.object = ro.object;
+                    v.setObject(ro.getObject());
                     return v;
                 }
                 break;
@@ -218,7 +220,7 @@ public class Evaluator {
                 if (lo.getType().equals(PrimitiveType.DECIMAL) ) {
                     v.setName("result");
                     v.setType(PrimitiveType.DECIMAL);
-                    v.decimal = lo.decimal.add(new BigDecimal(1));
+                    v.setDecimal(lo.getDecimal().add(new BigDecimal(1)));
                     return v;
                 }
                 break;
@@ -226,7 +228,7 @@ public class Evaluator {
                 if (lo.getType().equals(PrimitiveType.DECIMAL) ) {
                     v.setName("result");
                     v.setType(PrimitiveType.DECIMAL);
-                    v.decimal = lo.decimal.subtract(new BigDecimal(1));
+                    v.setDecimal(lo.getDecimal().subtract(new BigDecimal(1)));
                     return v;
                 }
                 break;
@@ -305,24 +307,24 @@ public class Evaluator {
                     if( type.equals(PrimitiveType.DECIMAL)) {
                         lo = new Variable();
                         lo.setType(type);
-                        lo.decimal = p.getDecimalValue();
-                        System.out.println("lo: decimal:" + lo.decimal);
+                        lo.setDecimal(p.getDecimalValue());
+                        System.out.println("lo: decimal:" + lo.getDecimal());
                     }
                     else if( type.equals(PrimitiveType.STRING)) {
                         lo = new Variable();
                         lo.setType(type);
-                        lo.string = p.getStringValue();
+                        lo.setString(p.getStringValue());
                     }
                     else if( type.equals(PrimitiveType.BOOLEAN)) {
                         lo = new Variable();
                         lo.setType(type);
-                        lo.bool = p.getBooleanValue();
-                        System.out.println("lo:" + lo.bool);
+                        lo.setBool(p.getBooleanValue());
+                        System.out.println("lo:" + lo.getBool());
                     }
                     else if( type.equals(PrimitiveType.OBJECT)) {
                         lo = new Variable();
                         lo.setType(type);
-                        lo.object = p.getObjectValue();
+                        lo.setObject(p.getObjectValue());
                     }
                 }
             }
@@ -354,21 +356,21 @@ public class Evaluator {
                         if (type.equals(PrimitiveType.DECIMAL)) {
                             ro = new Variable();
                             ro.setType(type);
-                            ro.decimal = p.getDecimalValue();
-                            System.out.println("ro: decimal:" + ro.decimal);
+                            ro.setDecimal(p.getDecimalValue());
+                            System.out.println("ro: decimal:" + ro.getDecimal());
                         } else if (type.equals(PrimitiveType.STRING)) {
                             ro = new Variable();
                             ro.setType(type);
-                            ro.string = p.getStringValue();
+                            ro.setString(p.getStringValue());
                         } else if (type.equals(PrimitiveType.BOOLEAN)) {
                             ro = new Variable();
                             ro.setType(type);
-                            ro.bool = p.getBooleanValue();
+                            ro.setBool(p.getBooleanValue());
 
                         } else if (type.equals(PrimitiveType.OBJECT)) {
                             ro = new Variable();
                             ro.setType(type);
-                            ro.object = p.getObjectValue();
+                            ro.setObject(p.getObjectValue());
                         }
                     }
                 }
@@ -413,81 +415,6 @@ public class Evaluator {
 
     public static void main(String[] args)
     {
-        boolean t0 = testDecimalOnePlusOne();
-        System.out.println("testDecimalOnePlusOne:" + ((t0)?"passed":"failed"));
-
-        boolean t1 = testDecimalEqual();
-        System.out.println("testDecimalEqual:" + ((t1)?"passed":"failed"));
-        boolean t2 = testDecimalNotEqual();
-        System.out.println("testDecimalEqual:" + ((!t2)?"passed":"failed"));
-        boolean t3 = testDecimalGTEdgeOne();
-        System.out.println("testDecimalGTEdgeOne:" + ((t3)?"passed":"failed"));
-        boolean t4= testDecimalGTEdgeTwo();
-        System.out.println("testDecimalGTEdgeTwo:" + ((!t4)?"passed":"failed"));
-        boolean t5= testDecimalNotEqualOperandOne();
-        System.out.println("testDecimalNotEqualOperandOne:" + ((t5)?"passed":"failed"));
-        boolean t6= testDecimalNotEqualOperandTwo();
-        System.out.println("testDecimalNotEqualOperandTwo:" + ((!t6)?"passed":"failed"));
-
-        boolean t7 = testDecimalLTEdgeOne();
-        System.out.println("testDecimalLTEdgeOne:" + ((!t7)?"passed":"failed"));
-        boolean t8= testDecimalLTEdgeTwo();
-        System.out.println("testDecimalLTEdgeTwo:" + ((t8)?"passed":"failed"));
-
-        boolean t9 = testDecimalTwoMinusOne();
-        System.out.println("testDecimalTwoMinusOne:" + ((t9)?"passed":"failed"));
-
-        boolean t10 = testDecimalOnePlusOneLiteral();
-        System.out.println("testDecimalOnePlusOneLiteral:" + ((t10)?"passed":"failed"));
-
-        boolean t11 = testDecimalOneMinusOneLiteral();
-        System.out.println("testDecimalOneMinusOneLiteral:" + ((t11)?"passed":"failed"));
-
-        boolean t12 = testDecimal5X5();
-        System.out.println("testDecimal5X5:" + ((t12)?"passed":"failed"));
-
-        boolean t13 = testDecimal10D2();
-        System.out.println("testDecimal10D2:" + ((t13)?"passed":"failed"));
-
-        boolean t14 = testDecimal5X5S();
-        System.out.println("testDecimal5X5S:" + ((t14)?"passed":"failed"));
-
-        boolean t15 = testBooleanLogicalOr();
-        System.out.println(" testBooleanLogicalOr:" + ((t15)?"passed":"failed"));
-
-        boolean t16 = testBooleanLogicalAnd();
-        System.out.println(" testBooleanLogicalAnd:" + ((t16)?"passed":"failed"));
-
-        boolean t16b = testBooleanLogicalAndLiteral();
-        System.out.println(" testBooleanLogicalAndLiteral:" + ((t16b)?"passed":"failed"));
-
-
-        boolean t17 = testBooleanLogicalOrNot();
-        System.out.println(" testBooleanLogicalOrNot:" + ((t17)?"passed":"failed"));
-
-        boolean t18 = testBooleanLogicalAndNot();
-        System.out.println(" testBooleanLogicalAndNot:" + ((t18)?"passed":"failed"));
-
-        boolean t19 = testBooleanLogicalOrLiteral();
-        System.out.println(" testBooleanLogicalOrLiteral:" + ((t19)?"passed":"failed"));
-
-        boolean t20 = testBooleanTrueAndFalse();
-        System.out.println(" testBooleanLogicalOrLiteral:" + ((t20)?"passed":"failed"));
-
-        boolean t21 = testIncrement();
-        System.out.println(" testIncrement:" + ((t21)?"passed":"failed"));
-
-        boolean t22 = testDecrement();
-        System.out.println(" testDecrement:" + ((t22)?"passed":"failed"));
-
-        boolean t23 = testAssignment();
-        System.out.println(" testAssignment:" + ((t23)?"passed":"failed"));
-
-        boolean t24 = testAssignmentString();
-        System.out.println(" testAssignmentString:" + ((t24)?"passed":"failed"));
-
-        boolean t25 = testAssignmentBoolean();
-        System.out.println(" testAssignmentBoolean:" + ((t24)?"passed":"failed"));
 
     }
 

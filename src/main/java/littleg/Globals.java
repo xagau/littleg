@@ -1,3 +1,5 @@
+package littleg;
+
 import java.util.HashMap;
 
 public class Globals {
